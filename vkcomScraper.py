@@ -84,7 +84,6 @@ def avaibscraper(html):
     #print(avail)
     return avail
 
-
 def printer(price_fixed, name, avail):
     print("Product:", name, "price:", price_fixed, "eur", "availability:", avail)
 
