@@ -6,9 +6,6 @@ import time # For time.sleep()
 class BASE():
     base_url = "verkkokauppa.com"
     datafile = "D:\Acci\code\Gpu_Scraper\data.txt"
-    example_url = "https://www.verkkokauppa.com/fi/product/69281/nxkbj/MSI-GeForce-RTX-3090-GAMING-X-TRIO-24G-naytonohjain-PCI-e-va"
-    instock_url = "https://www.verkkokauppa.com/fi/product/12405/jhfrg/MSI-GEFORCE-GT-1030-2GH-LP-OC-2048-Mt-naytonohjain-PCI-e-vay"
-
 
 def importer(): # Loading URL from a file specified
     filename = BASE.datafile
@@ -43,12 +40,11 @@ def importer(): # Loading URL from a file specified
     # print(url_list)
     return url_list, url_list_len
 
-
 def start():
     print("Welcome to program")
     time.sleep(0.5)
     print("Starting with base url of", "'"+ BASE.base_url + "'", "and datafile from:", BASE.datafile)
-
+    return None
 
 def pricescraper(url):
     try:
@@ -115,4 +111,3 @@ def mainp():
             break
             
 mainp()
-# importer()

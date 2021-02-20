@@ -1,0 +1,8 @@
+.git
+.vs
+.vscode
+.__pycache__
+*.png
+*.jpg
+testi.py
+data.txt
