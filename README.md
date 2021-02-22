@@ -3,7 +3,9 @@
   
 
 Toiminta tällähetkellä vain verkkokauppa.com kanssa. 
-Ei ehkä näteintä tai parasta koodia, tehty harjoituksena
+Ei ehkä näteintä tai parasta koodia, tehty harjoituksena! !
+
+multiScraper.py EI OLE VALMIS 22.2.
 
 **Vaatimukset**
 
@@ -18,7 +20,7 @@ Ei ehkä näteintä tai parasta koodia, tehty harjoituksena
 
 **Tulevia ominaisuuksia**
 
- - Gigantti kaavin
- - Muiden tuotteiden kaavin (verrkkokaupassa)
+ - Gigantti kaavin (testissä)
+ - Muiden tuotteiden kaavin (Verkkokaupassa)
  - 
 

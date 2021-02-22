@@ -43,7 +43,7 @@ def importer(): # Loading URL from a file specified
 def start():
     print("Welcome to program")
     time.sleep(0.5)
-    print("Starting with base url of", "'"+ BASE.base_url + "'", "and datafile from:", BASE.datafile)
+    print("Starting with base URL of", "'"+ BASE.base_url + "'", "and datafile from:", BASE.datafile)
     return None
 
 def pricescraper(url):
@@ -52,8 +52,8 @@ def pricescraper(url):
         html_bytes = page.read()
         html = html_bytes.decode("utf-8")
     except Exception:
-        print("Cannot access webpage, exiting for now")
-        sys.exit(1)
+        print("Cannot access webpage or wrong url, exiting for now")
+        sys.exit(0)
     # print(html) # Print to Terminal
     pattern = "\\bcontent=\"\d{2,4}.\d\d\""
     price = re.findall(pattern, html)
@@ -85,7 +85,7 @@ def avaibscraper(html):
     return avail
 
 def printer(price_fixed, name, avail):
-    print("Product:", name, "price:", price_fixed, "eur", "availability:", avail)
+    print("Product:", name, "price:", price_fixed, "euro", "availability:", avail)
 
 def run(url):
     try:
