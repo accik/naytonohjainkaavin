@@ -20,7 +20,7 @@ multiScraper.py EI OLE VALMIS 22.2.
 
 **Tulevia ominaisuuksia**
 
- - Gigantti kaavin (testissä)
+ - Gigantti kaavin ei helposti mahdollinen useiden seikkojen vuoksi
  - Muiden tuotteiden kaavin (Verkkokaupassa)
  - 
 
