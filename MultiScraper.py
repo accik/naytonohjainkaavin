@@ -19,8 +19,8 @@ def importer(): # Loading URL from a file specified
     filename = BASE.datafile
     vk_url_list = []
     j_url_list = []
-    LENGHTS.vk_n = 0
-    LENGHTS.j_n = 0
+    # LENGHTS.vk_n = 0
+    # LENGHTS.j_n = 0
     try:
         f = open(filename, "r")
     except FileNotFoundError:
@@ -45,7 +45,7 @@ def importer(): # Loading URL from a file specified
             vk_url_list.append(row)
             LENGHTS.vk_n += 1
         else:
-            print("Not supported line")
+            print("Not supported line/URL")
             # continue
     f.close()
     LENGHTS.total_url_list_len = LENGHTS.vk_n + LENGHTS.j_n
@@ -81,8 +81,10 @@ def j_scraper(html):
     price_pattern = "[-|1] \d{2,4},\d\d€"
     price = re.findall(price_pattern, title)
     price = price[0]
+    price = price.replace("- ", "")
     price_fixed = price
-    name = title.replace(" - "+price, "")
+    fix = " - " + price
+    name = title.replace(fix, "")
     name = name.replace(" -näytönohjain", "")
     name = "'" + name + "'"
     mydivs = soup.find_all("div", {"class": "whrow"})
@@ -133,7 +135,8 @@ def mainp():
     vk_url_list, j_url_list = importer()
     print("Checking for Verkkokauppa.com URLs")
     vk_n = 0 # List item counter
-    while True:
+    vk_t0 = time.time()
+    while True: # Verkkokauppa.com
         url = vk_url_list[vk_n]
         html = get_html(url)
         price_fixed = vk_pricescraper(html)
@@ -143,6 +146,10 @@ def mainp():
         vk_n += 1
         if vk_n == LENGHTS.vk_n:
             break
+    vk_t1 = time.time()
+    vk_timer = vk_t1-vk_t0 # Verkkokauppa timer
+    print("That took", '{:.2f}'.format(vk_timer), "seconds", LENGHTS.vk_n, "item(s)") # Two decimals fine?
+    j_t0 = time.time()
     print("Checking for Jimms URLs")
     j_n = 0
     while True:
@@ -157,5 +164,7 @@ def mainp():
             break
         if j_n == LENGHTS.j_n:
             break
-
+    j_t1 = time.time()
+    j_timer = j_t1-j_t0 # Jimms timer
+    print("That took", '{:.2f}'.format(j_timer), "seconds for", LENGHTS.j_n, "item(s)")
 mainp()
