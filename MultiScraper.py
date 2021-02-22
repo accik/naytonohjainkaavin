@@ -51,7 +51,7 @@ def importer(): # Loading URL from a file specified
     LENGHTS.total_url_list_len = LENGHTS.vk_n + LENGHTS.j_n
     print("Successfully loaded total of", LENGHTS.total_url_list_len, "rows from the file")
     # print(vk_url_list)
-    print(j_url_list)
+    # print(j_url_list)
     return vk_url_list, j_url_list
 
 def start():
@@ -77,14 +77,20 @@ def get_html(url):
 def j_scraper(html):
     soup = BeautifulSoup(html, 'html.parser')
     title = soup.find("meta", property="og:title").get('content')
-    price_pattern = "\d\d\d,\d\d€"
+    title = title.replace(u'\xa0', u' ')
+    price_pattern = "[-|1] \d{2,4},\d\d€"
     price = re.findall(price_pattern, title)
     price = price[0]
     price_fixed = price
     name = title.replace(" - "+price, "")
     name = name.replace(" -näytönohjain", "")
     name = "'" + name + "'"
-    avail = "Prob no"
+    mydivs = soup.find_all("div", {"class": "whrow"})
+    mydivs = mydivs[1]
+    mydivs = str(mydivs)
+    avail = mydivs.replace("<div class=\"whrow\"><div class=\"whname\"><b>Web-myynti:</b></div><div class=\"whqty\">", "")
+    avail = avail.replace("</div></div>", "")
+    avail = avail + " web"
     # print(name,price,avail)
     return name, price_fixed, avail
 
