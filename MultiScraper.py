@@ -9,6 +9,7 @@ import time # For time.sleep()
 class BASE():
     base_url = "NA"
     datafile = "D:\Acci\code\Gpu_Scraper\data.txt"
+    timelimit = 5
 
 class LENGHTS():
     total_url_list_len = 0
@@ -19,8 +20,6 @@ def importer(): # Loading URL from a file specified
     filename = BASE.datafile
     vk_url_list = []
     j_url_list = []
-    # LENGHTS.vk_n = 0
-    # LENGHTS.j_n = 0
     try:
         f = open(filename, "r")
     except FileNotFoundError:
@@ -50,8 +49,6 @@ def importer(): # Loading URL from a file specified
     f.close()
     LENGHTS.total_url_list_len = LENGHTS.vk_n + LENGHTS.j_n
     print("Successfully loaded total of", LENGHTS.total_url_list_len, "rows from the file")
-    # print(vk_url_list)
-    # print(j_url_list)
     return vk_url_list, j_url_list
 
 def start():
@@ -61,7 +58,7 @@ def start():
     return None
 
 def get_html(url):
-    user_agent = 'Mozilla/5.0 (Windows NT 6.1; Win64; x64)' # Use what user agent you want
+    user_agent = "Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:85.0) Gecko/20100101 Firefox/85.0" # Use what user agent you want, new one to be sure
     headers = {'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8','User-Agent': user_agent} # header from Google :P
     req = urllib.request.Request(url,None, headers)
     try:
@@ -71,7 +68,6 @@ def get_html(url):
     except Exception:
         print("Cannot access webpage, exiting for now")
         sys.exit(0)
-    # print(page) # Print status to Terminal
     return html
 
 def j_scraper(html):
@@ -87,13 +83,15 @@ def j_scraper(html):
     name = title.replace(fix, "")
     name = name.replace(" -näytönohjain", "")
     name = "'" + name + "'"
-    mydivs = soup.find_all("div", {"class": "whrow"})
-    mydivs = mydivs[1]
-    mydivs = str(mydivs)
-    avail = mydivs.replace("<div class=\"whrow\"><div class=\"whname\"><b>Web-myynti:</b></div><div class=\"whqty\">", "")
-    avail = avail.replace("</div></div>", "")
-    avail = avail + " web"
-    # print(name,price,avail)
+    try: # If "web-myynti" is not found
+        mydivs = soup.find_all("div", {"class": "whrow"})
+        mydivs = mydivs[1]
+        mydivs = str(mydivs)
+        avail = mydivs.replace("<div class=\"whrow\"><div class=\"whname\"><b>Web-myynti:</b></div><div class=\"whqty\">", "")
+        avail = avail.replace("</div></div>", "")
+        avail = avail + " web"
+    except:
+        avail = "Not available or error" # Skipping the check and hardcoding a error value
     return name, price_fixed, avail
 
 def vk_pricescraper(html):
@@ -103,13 +101,11 @@ def vk_pricescraper(html):
     price = price[0]
     price_fixed = re.findall(pattern_fixed,price)
     price_fixed = price_fixed[0]
-    # print(price_fixed)
     return price_fixed
 
 def vk_namescraper(html):
     pattern = "<title data-rh=\"true\">[\s\S]*?Näytönohjaimet"
     name = re.findall(pattern, html)
-    #print(name)
     name = name[0]
     name = name.replace("<title data-rh=\"true\">", "")
     new_pattern = "[\s\S]*?näytönohjain"
@@ -123,7 +119,6 @@ def vk_avaibscraper(html):
     pattern = "out of stock|available for order"
     avail = re.findall(pattern, html)
     avail = avail[0]
-    #print(avail)
     return avail
 
 def printer(price_fixed, name, avail):
@@ -135,7 +130,7 @@ def mainp():
     vk_url_list, j_url_list = importer()
     print("Checking for Verkkokauppa.com URLs")
     vk_n = 0 # List item counter
-    vk_t0 = time.time()
+    vk_t0 = time.time() # Start time
     while True: # Verkkokauppa.com
         url = vk_url_list[vk_n]
         html = get_html(url)
@@ -144,13 +139,14 @@ def mainp():
         avail = vk_avaibscraper(html)
         printer(price_fixed, name, avail)
         vk_n += 1
+        time.sleep(BASE.timelimit) # For now to not spam
         if vk_n == LENGHTS.vk_n:
             break
-    vk_t1 = time.time()
+    vk_t1 = time.time() # End time
     vk_timer = vk_t1-vk_t0 # Verkkokauppa timer
-    print("That took", '{:.2f}'.format(vk_timer), "seconds", LENGHTS.vk_n, "item(s)") # Two decimals fine?
-    j_t0 = time.time()
+    print("That took", '{:.2f}'.format(vk_timer), "seconds for", LENGHTS.vk_n, "item(s)") # Two decimals fine?
     print("Checking for Jimms URLs")
+    j_t0 = time.time()
     j_n = 0
     while True:
         try:
@@ -159,6 +155,7 @@ def mainp():
             price_fixed, name, avail = j_scraper(html)
             printer(name,price_fixed, avail)
             j_n += 1
+            time.sleep(BASE.timelimit) # For now to not spam
         except Exception:
             print("Jimms links not found, stopping.")
             break
