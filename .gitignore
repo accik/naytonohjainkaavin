@@ -5,7 +5,7 @@
 *.png
 *.jpg
 testi.py
-data.txt
+# data.txt
 *.html
 # *.txt
 *.pdf
