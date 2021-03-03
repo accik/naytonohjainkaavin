@@ -3,18 +3,29 @@ from urllib.request import urlopen # To open URL provided
 import urllib.request # To make the request
 from bs4 import BeautifulSoup # To properly manage html tags later
 import re # For regex operations
-import time # For time.sleep()
+import time # For time
 
 class BASE():
-    base_url = "NA"
-    version = 2.0
-    datafile = "D:\Acci\code\Gpu_Scraper\data_s.txt"
-    timelimit = 5
+    version = 2.02
+    datafile = "l_data.txt" # Change to your datafile.txt
+    timelimit = 3 # Change if needed
 
 class LENGHTS():
     total_url_list_len = 0
     vk_n = 0
     j_n = 0
+
+class bcolors: # Grabbed from https://stackoverflow.com/questions/287871/how-to-print-colored-text-to-the-terminal
+    # These should work on every terminal
+    HEADER = '\033[95m' # Violet
+    OKBLUE = '\033[94m'
+    OKCYAN = '\033[96m'
+    OKGREEN = '\033[92m'
+    WARNING = '\033[93m' # Yellow
+    FAIL = '\033[91m' # Red
+    ENDC = '\033[0m' # Normal
+    BOLD = '\033[1m'
+    UNDERLINE = '\033[4m'
 
 def importer(): # Loading URL from a file specified
     filename = BASE.datafile
@@ -23,16 +34,16 @@ def importer(): # Loading URL from a file specified
     try:
         f = open(filename, "r") # Opening the file with read
     except FileNotFoundError:
-        print("File not found")
+        print(f"{bcolors.FAIL}File not found{bcolors.ENDC}")
         sys.exit(0)
     except Exception:
-        print("Error opening")
+        print(f"{bcolors.FAIL}Error opening{bcolors.ENDC}")
         sys.exit(0)
     while True:
         try:
             row = f.readline() # Reading one line from the file
         except Exception:
-            print("Error reading line from the file")
+            print(f"{bcolors.FAIL}Error reading line from the file{bcolors.ENDC}")
             sys.exit(0)
         row = row.rstrip()
         if len(row) == 0:
@@ -48,14 +59,14 @@ def importer(): # Loading URL from a file specified
             # continue
     f.close() # Closing the file
     LENGHTS.total_url_list_len = LENGHTS.vk_n + LENGHTS.j_n # Calculating total lines
-    print("Successfully loaded total of", LENGHTS.total_url_list_len, "rows from the file")
+    print(f"{bcolors.OKGREEN}Successfully loaded total of {LENGHTS.total_url_list_len} rows from the file{bcolors.ENDC}")
     return vk_url_list, j_url_list
 
 def start():
-    print("Welcome to version 2 of the program")
-    print("Attention! Currently using a 'cooldown' in searches of", BASE.timelimit, "seconds.") # New addition
+    print(f"{bcolors.HEADER}Welcome to version {BASE.version} of the program!{bcolors.ENDC}")
+    print(f"{bcolors.WARNING}Attention! Currently using a 'cooldown' in searches of {BASE.timelimit} seconds{bcolors.ENDC}") # New addition
     time.sleep(0.5)
-    print("Starting with base datafile from:", BASE.datafile)
+    print("Starting with datafile:", BASE.datafile)
     return None
 
 def get_html(url):
@@ -128,7 +139,7 @@ def printer(price_fixed, name, avail, total_counter):
     return total_counter
 
 def totals(total_avail, total_items):
-    print("Found total", total_avail, "out of",total_items, "products available.")
+    print("Found total", total_avail, "out of",total_items, "products available")
 
 def mainp():
     start()
@@ -138,21 +149,25 @@ def mainp():
     vk_n = 0 # List item counter
     vk_t0 = time.time() # Start time
     while True: # Verkkokauppa.com
-        url = vk_url_list[vk_n]
-        html = get_html(url)
-        price_fixed = vk_pricescraper(html)
-        name = vk_namescraper(html)
-        avail = vk_avaibscraper(html)
-        if avail == "available for order":
-            total_counter = printer(price_fixed, name, avail, total_counter)
-        vk_n += 1
-        time.sleep(BASE.timelimit) # For now to not spam
+        try:
+            url = vk_url_list[vk_n]
+            html = get_html(url)
+            price_fixed = vk_pricescraper(html)
+            name = vk_namescraper(html)
+            avail = vk_avaibscraper(html)
+            if avail == "available for order":
+                total_counter = printer(price_fixed, name, avail, total_counter)
+            vk_n += 1
+            time.sleep(BASE.timelimit) # For now to not spam
+        except Exception:
+            print("Verkkokauppa.com links not found, skipping")
+            break
         if vk_n == LENGHTS.vk_n:
             break
     totals(total_counter, LENGHTS.vk_n)
     vk_t1 = time.time() # End time
     vk_timer = vk_t1-vk_t0 # Verkkokauppa timer
-    print("That took", '{:.2f}'.format(vk_timer - (LENGHTS.vk_n * BASE.timelimit)), "seconds for", LENGHTS.vk_n, "item(s)") # Two decimals fine?
+    print("Pageloads took", '{:.2f}'.format(vk_timer - (LENGHTS.vk_n * BASE.timelimit)), "seconds for", LENGHTS.vk_n, "item(s)") # Two decimals fine?
     print("Checking for Jimms URLs")
     total_counter = 0 # Resetting the total for the next site
     j_t0 = time.time()
@@ -169,12 +184,17 @@ def mainp():
             j_n += 1
             time.sleep(BASE.timelimit) # For now to not spam
         except Exception:
-            print("Jimms links not found, stopping.")
+            print("Jimms links not found, skipping")
             break
         if j_n == LENGHTS.j_n:
             break
     totals(total_counter, LENGHTS.j_n)
     j_t1 = time.time()
     j_timer = j_t1-j_t0 # Jimms timer
-    print("That took", '{:.2f}'.format(j_timer - (LENGHTS.j_n * BASE.timelimit)), "seconds for", LENGHTS.j_n, "item(s)")
-mainp()
+    print("Pageloads took", '{:.2f}'.format(j_timer - (LENGHTS.j_n * BASE.timelimit)), "seconds for", LENGHTS.j_n, "item(s)")
+
+try:
+    mainp()
+except KeyboardInterrupt:
+    print(f"{bcolors.WARNING}Stopping......{bcolors.ENDC}")
+    sys.exit(0)
