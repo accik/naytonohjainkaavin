@@ -52,7 +52,8 @@ def importer(): # Loading URL from a file specified
     return vk_url_list, j_url_list
 
 def start():
-    print("Welcome to program")
+    print("NOW OUTDATED BY MULTISCRAPERV2!")
+    print("NOT ALL FIXES ARE INCLUDED HERE!")
     print("Attention! Currently using a 'cooldown' in searches of", BASE.timelimit, "seconds.") # New addition
     time.sleep(0.5)
     print("Starting with base datafile from:", BASE.datafile)
