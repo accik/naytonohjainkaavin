@@ -18,10 +18,10 @@ class LENGHTS():
 
 def importer(): # Loading URL from a file specified
     filename = BASE.datafile
-    vk_url_list = []
+    vk_url_list = [] # Making the lists
     j_url_list = []
     try:
-        f = open(filename, "r")
+        f = open(filename, "r") # Opening the file with read
     except FileNotFoundError:
         print("File not found")
         sys.exit(0)
@@ -30,14 +30,14 @@ def importer(): # Loading URL from a file specified
         sys.exit(0)
     while True:
         try:
-            row = f.readline()
+            row = f.readline() # Reading one line from the file
         except Exception:
             print("Error reading line from the file")
             sys.exit(0)
         row = row.rstrip()
         if len(row) == 0:
             break
-        elif row.startswith("https://www.jimms.fi/"):
+        elif row.startswith("https://www.jimms.fi/"): # Checking if the line matches what we want
             j_url_list.append(row)
             LENGHTS.j_n += 1
         elif row.startswith("https://www.verkkokauppa.com"):
@@ -46,27 +46,28 @@ def importer(): # Loading URL from a file specified
         else:
             print("Not supported line/URL")
             # continue
-    f.close()
-    LENGHTS.total_url_list_len = LENGHTS.vk_n + LENGHTS.j_n
+    f.close() # Closing the file
+    LENGHTS.total_url_list_len = LENGHTS.vk_n + LENGHTS.j_n # Calculating total lines
     print("Successfully loaded total of", LENGHTS.total_url_list_len, "rows from the file")
     return vk_url_list, j_url_list
 
 def start():
     print("Welcome to program")
-    time.sleep(0.2)
+    print("Attention! Currently using a 'cooldown' in searches of", BASE.timelimit, "seconds.") # New addition
+    time.sleep(0.5)
     print("Starting with base datafile from:", BASE.datafile)
     return None
 
 def get_html(url):
     user_agent = "Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:85.0) Gecko/20100101 Firefox/85.0" # Use what user agent you want, new one to be sure
     headers = {'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8','User-Agent': user_agent} # header from Google :P
-    req = urllib.request.Request(url,None, headers)
+    req = urllib.request.Request(url,None, headers) # Making the request
     try:
-        page = urlopen(req)
-        html_bytes = page.read()
-        html = html_bytes.decode("utf-8")
+        page = urlopen(req) # "Opening" the url with previous parameters
+        html_bytes = page.read() # Reading the page
+        html = html_bytes.decode("utf-8") # Decoding to utf-8 to get proper Ä,Ö and Å
     except Exception:
-        print("Cannot access webpage, exiting for now")
+        print("Cannot access webpage, exiting for now") # If we get timed out or other issues
         sys.exit(0)
     return html
 
