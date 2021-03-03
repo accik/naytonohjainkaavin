@@ -28,5 +28,6 @@ Ei takuuta tai lupausta toiminnasta.
 **Tulevia ominaisuuksia**
 
  - Muiden tuotteiden kaavin (Verkkokaupassa)
- - Laskuri tai ilmoitus jos tuote on saatavilla
-
+ - Laskuri tai ilmoitus jos tuote on saatavilla. Kohta valmis, julkaistaan nimellä MultiScraperV2.py
+ - Esimerkkidatatiedosto
+ - Tiedoston tai ominaisuuksien antaminen parametrinä ohjelmalle.

@@ -7,5 +7,5 @@
 testi.py
 data.txt
 *.html
-*.txt
+# *.txt
 *.pdf
