@@ -9,13 +9,15 @@ Ei takuuta tai lupausta toiminnasta.
 **Vaatimukset**
 
  - Testattu python 3.9.1 64-bit, uusimmat kirjastot
- - Kirjastot: bs4/beautifulsoup4, urllib, re, time, sys (requirements.txt)
+ - Kirjastot: bs4/beautifulsoup4, urllib, re, time, sys
 
 **Käyttö**
 
- - Asenna ylläolevat kirjastot (pip install)
- - Luo datatiedosto (tai käytä data.txt) ja merkitse sen nimi/sijainti riville 8.
+ - Asenna ylläolevat kirjastot (pip install tai requirements.txt)
+ - Luo datatiedosto tai käytä esimerkkinä data.txt
  - Datatiedostoon laita yksi tuotelinkki per rivi, esimerkin mukaan.
+ - Laita tiedoston sijainti riville 11 tai käytä argumenttia ```
+ -f <datatiedosto>```
  - Tuetut nettisivut ovat Verkkokauppa.com (*Vain* näytönohjaimet) ja Jimms.fi (muut tuotteet *saattavat* toimia)
 
 **Huomautuksia**
