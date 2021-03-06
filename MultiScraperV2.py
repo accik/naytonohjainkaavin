@@ -1,13 +1,14 @@
 import sys
 from urllib.request import urlopen # To open URL provided
 import urllib.request # To make the request
+from urllib.error import HTTPError
 from bs4 import BeautifulSoup # To properly manage html tags later
 import re # For regex operations
 import time # For time
 
 class BASE():
-    version = 2.02
-    datafile = "l_data.txt" # Change to your datafile.txt
+    version = 2.03
+    datafile = "data.txt" # Change to your datafile.txt
     timelimit = 3 # Change if needed
 
 class LENGHTS():
@@ -77,24 +78,38 @@ def get_html(url):
         page = urlopen(req) # "Opening" the url with previous parameters
         html_bytes = page.read() # Reading the page
         html = html_bytes.decode("utf-8") # Decoding to utf-8 to get proper Ä,Ö and Å
+    except HTTPError as err: # https://stackoverflow.com/questions/3193060/catch-specific-http-error-in-python
+        if err.code == 404:
+            print(f"{bcolors.WARNING}HTTP Error 404 with a line, skipping{bcolors.ENDC}")
+            html = "" # Just to make sure
+        elif err.code == 403: # Forbidden
+            print(f"{bcolors.WARNING}HTTP Error 403 forbidden, getting rate limited. Stopping{bcolors.ENDC}")
+            sys.exit(0)
+        else:
+            raise
     except Exception:
-        print("Cannot access webpage, exiting for now") # If we get timed out or other issues
+        print(f"{bcolors.FAIL}Cannot access webpage, exiting for now{bcolors.ENDC}") # If we get timed out or other issues
         sys.exit(0)
     return html
 
 def j_scraper(html):
-    soup = BeautifulSoup(html, 'html.parser')
-    title = soup.find("meta", property="og:title").get('content')
-    title = title.replace(u'\xa0', u' ')
-    price_pattern = "[-|1] \d{2,4},\d\d€"
-    price = re.findall(price_pattern, title)
-    price = price[0]
-    price = price.replace("- ", "")
-    price_fixed = price
-    fix = " - " + price
-    name = title.replace(fix, "")
-    name = name.replace(" -näytönohjain", "")
-    name = "'" + name + "'"
+    try:
+        soup = BeautifulSoup(html, 'html.parser')
+        title = soup.find("meta", property="og:title").get('content')
+        title = title.replace(u'\xa0', u' ')
+        price_pattern = "[-|1] \d{2,4},\d\d€"
+        price = re.findall(price_pattern, title)
+        price = price[0]
+        price = price.replace("- ", "")
+        price_fixed = price
+        fix = " - " + price
+        name = title.replace(fix, "")
+        name = name.replace(" -näytönohjain", "")
+        name = "'" + name + "'"
+    except Exception:
+        # print("ERRORTEST")
+        price_fixed = 0
+        name = ""
     try: # If "web-myynti" is not found
         mydivs = soup.find_all("div", {"class": "whrow"})
         mydivs = mydivs[1]
@@ -102,8 +117,8 @@ def j_scraper(html):
         avail = mydivs.replace("<div class=\"whrow\"><div class=\"whname\"><b>Web-myynti:</b></div><div class=\"whqty\">", "")
         avail = avail.replace("</div></div>", "")
         avail = avail + " web"
-    except:
-        avail = "Not available or error" # Skipping the check and hardcoding an error value
+    except Exception:
+        avail = "0 kpl web" # Skipping the check and hardcoding an error value
     return name, price_fixed, avail
 
 def vk_pricescraper(html):
