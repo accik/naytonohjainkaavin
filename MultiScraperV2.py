@@ -8,8 +8,9 @@ import time # For time
 
 class BASE():
     version = 2.03
-    datafile = "data.txt" # Change to your datafile.txt
+    datafile = "l_data.txt" # Change to your datafile.txt
     timelimit = 3 # Change if needed
+    debug = 0
 
 class LENGHTS():
     total_url_list_len = 0
@@ -82,8 +83,9 @@ def get_html(url):
         if err.code == 404:
             print(f"{bcolors.WARNING}HTTP Error 404 with a line, skipping{bcolors.ENDC}")
             html = "" # Just to make sure
+            print("404 url:", url) # DEBUG
         elif err.code == 403: # Forbidden
-            print(f"{bcolors.WARNING}HTTP Error 403 forbidden, getting rate limited. Stopping{bcolors.ENDC}")
+            print(f"{bcolors.WARNING}HTTP Error 403 forbidden, most likely getting rate limited. Stopping{bcolors.ENDC}")
             sys.exit(0)
         else:
             raise
@@ -155,6 +157,15 @@ def printer(price_fixed, name, avail, total_counter):
 
 def totals(total_avail, total_items):
     print("Found total", total_avail, "out of",total_items, "products available")
+
+def d_bug():
+    try:
+        argv = sys.argv[1]
+        BASE.debug = 1
+        if argv == "-d":
+            print("Debug on")
+    except Exception:
+        pass
 
 def mainp():
     start()
