@@ -7,9 +7,10 @@ import re # For regex operations
 import time # For time
 
 class BASE():
-    version = 2.03
-    datafile = "data.txt" # Change to your datafile.txt
+    version = 2.05
+    datafile = "data.txt" # This the default file, change to your datafile.txt
     timelimit = 3 # Change if needed
+    debug = 0 # To monitor debug status
 
 class LENGHTS():
     total_url_list_len = 0
@@ -82,8 +83,10 @@ def get_html(url):
         if err.code == 404:
             print(f"{bcolors.WARNING}HTTP Error 404 with a line, skipping{bcolors.ENDC}")
             html = "" # Just to make sure
+            if BASE.debug == 1:
+                print("404 url:", url) # DEBUG
         elif err.code == 403: # Forbidden
-            print(f"{bcolors.WARNING}HTTP Error 403 forbidden, getting rate limited. Stopping{bcolors.ENDC}")
+            print(f"{bcolors.WARNING}HTTP Error 403 forbidden, most likely getting rate limited. Stopping{bcolors.ENDC}")
             sys.exit(0)
         else:
             raise
@@ -156,7 +159,29 @@ def printer(price_fixed, name, avail, total_counter):
 def totals(total_avail, total_items):
     print("Found total", total_avail, "out of",total_items, "products available")
 
+def d_bug(): # Enabling debug prints and other things
+    try:
+        argv = sys.argv[1]
+        BASE.debug = 1
+        if argv == "-d":
+            print(f"{bcolors.WARNING}Debug is turned on{bcolors.ENDC}")
+    except Exception:
+        pass
+
+def f_loader(): # File loader from argument
+    try:
+        argv = sys.argv[1]
+        if argv == "-f":
+            filename = sys.argv[2]
+            print(f"{bcolors.OKBLUE}Loaded a datafile from argument{bcolors.ENDC}")
+            print("Datafile name/path is", filename)
+            BASE.datafile = filename
+    except Exception:
+        print("No file provided")
+
 def mainp():
+    d_bug()
+    f_loader()
     start()
     vk_url_list, j_url_list = importer()
     print("Checking for Verkkokauppa.com URLs")
@@ -182,7 +207,7 @@ def mainp():
     totals(total_counter, LENGHTS.vk_n)
     vk_t1 = time.time() # End time
     vk_timer = vk_t1-vk_t0 # Verkkokauppa timer
-    print("Pageloads took", '{:.2f}'.format(vk_timer - (LENGHTS.vk_n * BASE.timelimit)), "seconds for", LENGHTS.vk_n, "item(s)") # Two decimals fine?
+    print("Page loads took", '{:.2f}'.format(vk_timer - (LENGHTS.vk_n * BASE.timelimit)), "seconds for", LENGHTS.vk_n, "item(s)") # Two decimals fine?
     print("Checking for Jimms URLs")
     total_counter = 0 # Resetting the total for the next site
     j_t0 = time.time()
@@ -206,7 +231,7 @@ def mainp():
     totals(total_counter, LENGHTS.j_n)
     j_t1 = time.time()
     j_timer = j_t1-j_t0 # Jimms timer
-    print("Pageloads took", '{:.2f}'.format(j_timer - (LENGHTS.j_n * BASE.timelimit)), "seconds for", LENGHTS.j_n, "item(s)")
+    print("Page loads took", '{:.2f}'.format(j_timer - (LENGHTS.j_n * BASE.timelimit)), "seconds for", LENGHTS.j_n, "item(s)")
 
 try:
     mainp()
