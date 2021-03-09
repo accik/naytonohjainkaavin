@@ -162,9 +162,9 @@ def totals(total_avail, total_items):
 def d_bug(): # Enabling debug prints and other things
     try:
         argv = sys.argv[1]
-        BASE.debug = 1
         if argv == "-d":
             print(f"{bcolors.WARNING}Debug is turned on{bcolors.ENDC}")
+            BASE.debug = 1
     except Exception:
         pass
 
