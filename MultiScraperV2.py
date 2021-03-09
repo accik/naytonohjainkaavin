@@ -7,7 +7,7 @@ import re # For regex operations
 import time # For time
 
 class BASE():
-    version = 2.05
+    version = 2.1
     datafile = "data.txt" # This the default file, change to your datafile.txt
     timelimit = 3 # Change if needed
     debug = 0 # To monitor debug status
@@ -159,29 +159,24 @@ def printer(price_fixed, name, avail, total_counter):
 def totals(total_avail, total_items):
     print("Found total", total_avail, "out of",total_items, "products available")
 
-def d_bug(): # Enabling debug prints and other things
-    try:
-        argv = sys.argv[1]
-        BASE.debug = 1
-        if argv == "-d":
+def arg_parser(): # Enabling debug prints and other things
+    argv_list = sys.argv[1:]
+    print("argumenttilista:", argv_list) # DEBUG
+    n = 0
+    for i in range(len(argv_list)):
+        item = argv_list[i]
+        if item == "-d":
             print(f"{bcolors.WARNING}Debug is turned on{bcolors.ENDC}")
-    except Exception:
-        pass
-
-def f_loader(): # File loader from argument
-    try:
-        argv = sys.argv[1]
-        if argv == "-f":
-            filename = sys.argv[2]
+            BASE.debug = 1
+        elif item == "-f":
+            filename = argv_list[n + 1]
             print(f"{bcolors.OKBLUE}Loaded a datafile from argument{bcolors.ENDC}")
             print("Datafile name/path is", filename)
             BASE.datafile = filename
-    except Exception:
-        print("No file provided")
+        n+=1
 
 def mainp():
-    d_bug()
-    f_loader()
+    arg_parser()
     start()
     vk_url_list, j_url_list = importer()
     print("Checking for Verkkokauppa.com URLs")
