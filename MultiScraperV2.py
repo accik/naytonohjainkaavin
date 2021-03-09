@@ -7,7 +7,7 @@ import re # For regex operations
 import time # For time
 
 class BASE():
-    version = 2.05
+    version = 2.1
     datafile = "data.txt" # This the default file, change to your datafile.txt
     timelimit = 3 # Change if needed
     debug = 0 # To monitor debug status
@@ -159,29 +159,28 @@ def printer(price_fixed, name, avail, total_counter):
 def totals(total_avail, total_items):
     print("Found total", total_avail, "out of",total_items, "products available")
 
-def d_bug(): # Enabling debug prints and other things
+def arg_parser(): # Enabling debug prints and other things
+    n = 0
     try:
-        argv = sys.argv[1]
-        if argv == "-d":
-            print(f"{bcolors.WARNING}Debug is turned on{bcolors.ENDC}")
-            BASE.debug = 1
+        argv_list = sys.argv[1:]
+        # print("Argumentlist:", argv_list) # DEBUG
+        for i in range(len(argv_list)):
+            item = argv_list[i]
+            if item == "-d":
+                print(f"{bcolors.WARNING}Debug is turned on{bcolors.ENDC}")
+                BASE.debug = 1
+            elif item == "-f":
+                filename = argv_list[n + 1]
+                print(f"{bcolors.OKBLUE}Loaded a datafile from argument{bcolors.ENDC}")
+                print("Datafile name/path is", filename)
+                BASE.datafile = filename
+            n+=1
     except Exception:
-        pass
-
-def f_loader(): # File loader from argument
-    try:
-        argv = sys.argv[1]
-        if argv == "-f":
-            filename = sys.argv[2]
-            print(f"{bcolors.OKBLUE}Loaded a datafile from argument{bcolors.ENDC}")
-            print("Datafile name/path is", filename)
-            BASE.datafile = filename
-    except Exception:
-        print("No file provided")
+            print(f"{bcolors.FAIL}Error with arguments{bcolors.ENDC}")
+            sys.exit(0)
 
 def mainp():
-    d_bug()
-    f_loader()
+    arg_parser()
     start()
     vk_url_list, j_url_list = importer()
     print("Checking for Verkkokauppa.com URLs")
@@ -197,6 +196,8 @@ def mainp():
             avail = vk_avaibscraper(html)
             if avail == "available for order":
                 total_counter = printer(price_fixed, name, avail, total_counter)
+            elif BASE.debug == 1:
+                print(name, price_fixed, avail)
             vk_n += 1
             time.sleep(BASE.timelimit) # For now to not spam
         except Exception:
@@ -216,11 +217,13 @@ def mainp():
         try:
             url = j_url_list[j_n]
             html = get_html(url)
-            price_fixed, name, avail = j_scraper(html)
+            name, price_fixed, avail = j_scraper(html)
             if avail.startswith("0 kpl web"):
                 pass
             else:
-                total_counter = printer(name,price_fixed, avail,total_counter)
+                total_counter = printer(price_fixed, name, avail,total_counter)
+            if BASE.debug == 1:
+                print(name, price_fixed, avail)
             j_n += 1
             time.sleep(BASE.timelimit) # For now to not spam
         except Exception:
