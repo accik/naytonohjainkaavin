@@ -163,7 +163,7 @@ def arg_parser(): # Enabling debug prints and other things
     n = 0
     try:
         argv_list = sys.argv[1:]
-        print("Argumentlist:", argv_list) # DEBUG
+        # print("Argumentlist:", argv_list) # DEBUG
         for i in range(len(argv_list)):
             item = argv_list[i]
             if item == "-d":
