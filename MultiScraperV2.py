@@ -160,20 +160,24 @@ def totals(total_avail, total_items):
     print("Found total", total_avail, "out of",total_items, "products available")
 
 def arg_parser(): # Enabling debug prints and other things
-    argv_list = sys.argv[1:]
-    print("argumenttilista:", argv_list) # DEBUG
     n = 0
-    for i in range(len(argv_list)):
-        item = argv_list[i]
-        if item == "-d":
-            print(f"{bcolors.WARNING}Debug is turned on{bcolors.ENDC}")
-            BASE.debug = 1
-        elif item == "-f":
-            filename = argv_list[n + 1]
-            print(f"{bcolors.OKBLUE}Loaded a datafile from argument{bcolors.ENDC}")
-            print("Datafile name/path is", filename)
-            BASE.datafile = filename
-        n+=1
+    try:
+        argv_list = sys.argv[1:]
+        print("Argumentlist:", argv_list) # DEBUG
+        for i in range(len(argv_list)):
+            item = argv_list[i]
+            if item == "-d":
+                print(f"{bcolors.WARNING}Debug is turned on{bcolors.ENDC}")
+                BASE.debug = 1
+            elif item == "-f":
+                filename = argv_list[n + 1]
+                print(f"{bcolors.OKBLUE}Loaded a datafile from argument{bcolors.ENDC}")
+                print("Datafile name/path is", filename)
+                BASE.datafile = filename
+            n+=1
+    except Exception:
+            print(f"{bcolors.FAIL}Error with arguments{bcolors.ENDC}")
+            sys.exit(0)
 
 def mainp():
     arg_parser()
@@ -192,6 +196,8 @@ def mainp():
             avail = vk_avaibscraper(html)
             if avail == "available for order":
                 total_counter = printer(price_fixed, name, avail, total_counter)
+            elif BASE.debug == 1:
+                print(name, price_fixed, avail)
             vk_n += 1
             time.sleep(BASE.timelimit) # For now to not spam
         except Exception:
@@ -211,11 +217,13 @@ def mainp():
         try:
             url = j_url_list[j_n]
             html = get_html(url)
-            price_fixed, name, avail = j_scraper(html)
+            name, price_fixed, avail = j_scraper(html)
             if avail.startswith("0 kpl web"):
                 pass
             else:
-                total_counter = printer(name,price_fixed, avail,total_counter)
+                total_counter = printer(price_fixed, name, avail,total_counter)
+            if BASE.debug == 1:
+                print(name, price_fixed, avail)
             j_n += 1
             time.sleep(BASE.timelimit) # For now to not spam
         except Exception:
