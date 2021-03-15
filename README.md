@@ -15,14 +15,14 @@ Ei takuuta tai lupausta toiminnasta.
 
  - Asenna ylläolevat kirjastot (pip install tai requirements.txt)
  - Luo datatiedosto tai käytä esimerkkinä data.txt
- - Datatiedostoon laita yksi tuotelinkki per rivi, esimerkin mukaan.
+ - Datatiedostoon laita yksi tuotelinkki per rivi, esimerkin mukaan. Mahdolliset verkkokaupan linkit ensin.
  - Laita tiedoston sijainti riville 11 tai käytä argumenttia ```
  -f <datatiedosto>```
- - Tuetut nettisivut ovat Verkkokauppa.com (*Vain* näytönohjaimet) ja Jimms.fi (muut tuotteet *saattavat* toimia)
 
 **Huomautuksia**
 
- - Haut on tarkoituksella rajoitettu yksi per 5 sekuntia ("timelimit")
+ - Tuetut nettisivut ovat Verkkokauppa.com (*Vain* näytönohjaimet) ja Jimms.fi (muut tuotteet *saattavat* toimia)
+ - Haut on tarkoituksella rajoitettu yksi per 3 sekuntia ("timelimit")
  - "user_agent" ja "headers" on valittu omien seikkojen mukaan, muokkaa tarvittaessa.
  - Gigantti kaavin ei helposti mahdollinen useiden seikkojen vuoksi
 
