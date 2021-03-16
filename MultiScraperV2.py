@@ -8,11 +8,11 @@ import time # For time
 
 class BASE():
     version = 2.1
-    datafile = "data.txt" # This the default file, change to your datafile.txt
+    datafile = "example_datafiles/lu_data.txt" # This the default file, change to your <datafile>.txt
     timelimit = 3 # Change if needed
     debug = 0 # To monitor debug status
 
-class LENGHTS():
+class LENGHTS(): # Global class to track file lengths
     total_url_list_len = 0
     vk_n = 0
     j_n = 0
@@ -34,7 +34,7 @@ def importer(): # Loading URL from a file specified
     vk_url_list = [] # Making the lists
     j_url_list = []
     try:
-        f = open(filename, "r") # Opening the file with read
+        f = open(filename, "r", encoding='utf-8') # Opening the file with read
     except FileNotFoundError:
         print(f"{bcolors.FAIL}File not found{bcolors.ENDC}")
         sys.exit(0)
@@ -97,23 +97,23 @@ def get_html(url):
 
 def j_scraper(html):
     try:
-        soup = BeautifulSoup(html, 'html.parser')
-        title = soup.find("meta", property="og:title").get('content')
-        title = title.replace(u'\xa0', u' ')
-        price_pattern = "[-|1] \d{2,4},\d\d€"
-        price = re.findall(price_pattern, title)
-        price = price[0]
-        price = price.replace("- ", "")
+        soup = BeautifulSoup(html, 'html.parser') # Parsing the raw html data
+        title = soup.find("meta", property="og:title").get('content') # Finding meta titles
+        title = title.replace(u'\xa0', u' ') # Cleaning
+        price_pattern = "[-|1] \d{2,4},\d\d€" # Creating price pattern
+        price = re.findall(price_pattern, title) # Then finding it
+        price = price[0] # Selecting the first one
+        price = price.replace("- ", "") # Cleaning
         price_fixed = price
         fix = " - " + price
         name = title.replace(fix, "")
         name = name.replace(" -näytönohjain", "")
         name = "'" + name + "'"
-    except Exception:
+    except Exception: # If the search fails at some point
         # print("ERRORTEST")
-        price_fixed = 0
+        price_fixed = 0 # Hardcoding values to be sure
         name = ""
-    try: # If "web-myynti" is not found
+    try: # Getting the status of the product
         mydivs = soup.find_all("div", {"class": "whrow"})
         mydivs = mydivs[1]
         mydivs = str(mydivs)
@@ -159,23 +159,40 @@ def printer(price_fixed, name, avail, total_counter):
 def totals(total_avail, total_items):
     print("Found total", total_avail, "out of",total_items, "products available")
 
-def arg_parser(): # Enabling debug prints and other things
+def arg_parser(): # Enabling file loading from arguments and debug prints
     n = 0
     try:
-        argv_list = sys.argv[1:]
+        argv_list = sys.argv[1:] # Making a list out of the arguments minus the filename
         # print("Argumentlist:", argv_list) # DEBUG
-        for i in range(len(argv_list)):
+        for i in range(len(argv_list)): # Going through the list
             item = argv_list[i]
-            if item == "-d":
+            if item == "-d": # If the given argument is -d
                 print(f"{bcolors.WARNING}Debug is turned on{bcolors.ENDC}")
                 BASE.debug = 1
             elif item == "-f":
                 filename = argv_list[n + 1]
-                print(f"{bcolors.OKBLUE}Loaded a datafile from argument{bcolors.ENDC}")
-                print("Datafile name/path is", filename)
-                BASE.datafile = filename
+                print(f"{bcolors.OKBLUE}Loaded a datafile from argument \"{filename}\"{bcolors.ENDC}")
+                # print("Datafile name/path is", filename)
+                BASE.datafile = filename # Setting the filename global variable
+            elif item == "-t":
+                timelimit = int(argv_list[n + 1])
+                print(f"Timelimit was set to {timelimit} seconds")
+                BASE.timelimit = timelimit
+            elif item == "-h":
+                print("Help page")
+                print("")
+                print("Usage:")
+                print("use -f <filename> to load specific file")
+                print("-d to activate debug prints")
+                print("-t to change timelimit")
+                print("")
+                sys.exit(0)
+            elif BASE.datafile != "data.txt": # Not sure
+                pass
+            else: # Kinda works
+                print("Argument", item, "not identified.")
             n+=1
-    except Exception:
+    except Exception: # In case user input is somehow wrong
             print(f"{bcolors.FAIL}Error with arguments{bcolors.ENDC}")
             sys.exit(0)
 
@@ -189,12 +206,12 @@ def mainp():
     vk_t0 = time.time() # Start time
     while True: # Verkkokauppa.com
         try:
-            url = vk_url_list[vk_n]
-            html = get_html(url)
-            price_fixed = vk_pricescraper(html)
-            name = vk_namescraper(html)
-            avail = vk_avaibscraper(html)
-            if avail == "available for order":
+            url = vk_url_list[vk_n] # Getting the url line by line
+            html = get_html(url) # Getting the raw html
+            price_fixed = vk_pricescraper(html) # Getting price
+            name = vk_namescraper(html) # Getting product name
+            avail = vk_avaibscraper(html) # Getting availability
+            if avail == "available for order": # If the avail is good we print the details
                 total_counter = printer(price_fixed, name, avail, total_counter)
             elif BASE.debug == 1: # If debug is on
                 print(f"{name} price: {price_fixed} eur, status: {avail}") # Prints all lines
@@ -202,10 +219,10 @@ def mainp():
                 print("Halfway done.....")
             vk_n += 1 # Counter
             time.sleep(BASE.timelimit) # For now to not spam
-        except Exception:
+        except Exception: # If vk links aren't found
             print("Verkkokauppa.com links not found, skipping")
             break
-        if vk_n == LENGHTS.vk_n:
+        if vk_n == LENGHTS.vk_n: # Stopping when list ends
             break
     totals(total_counter, LENGHTS.vk_n)
     vk_t1 = time.time() # End time
