@@ -196,9 +196,11 @@ def mainp():
             avail = vk_avaibscraper(html)
             if avail == "available for order":
                 total_counter = printer(price_fixed, name, avail, total_counter)
-            elif BASE.debug == 1:
-                print(name, price_fixed, avail)
-            vk_n += 1
+            elif BASE.debug == 1: # If debug is on
+                print(f"{name} price: {price_fixed} eur, status: {avail}") # Prints all lines
+            if vk_n == LENGHTS.vk_n // 2:
+                print("Halfway done.....")
+            vk_n += 1 # Counter
             time.sleep(BASE.timelimit) # For now to not spam
         except Exception:
             print("Verkkokauppa.com links not found, skipping")
@@ -208,7 +210,7 @@ def mainp():
     totals(total_counter, LENGHTS.vk_n)
     vk_t1 = time.time() # End time
     vk_timer = vk_t1-vk_t0 # Verkkokauppa timer
-    print("Page loads took", '{:.2f}'.format(vk_timer - (LENGHTS.vk_n * BASE.timelimit)), "seconds for", LENGHTS.vk_n, "item(s)") # Two decimals fine?
+    print("Page loads took", '{:.2f}'.format(abs(vk_timer - (LENGHTS.vk_n * BASE.timelimit))), "seconds for", LENGHTS.vk_n, "item(s)") # Two decimals fine?
     print("Checking for Jimms URLs")
     total_counter = 0 # Resetting the total for the next site
     j_t0 = time.time()
@@ -223,7 +225,9 @@ def mainp():
             else:
                 total_counter = printer(price_fixed, name, avail,total_counter)
             if BASE.debug == 1:
-                print(name, price_fixed, avail)
+                print(f"{name} price: {price_fixed} eur, status: {avail}")
+            if vk_n == LENGHTS.j_n // 2:
+                print("Halfway done.....")
             j_n += 1
             time.sleep(BASE.timelimit) # For now to not spam
         except Exception:
@@ -234,7 +238,7 @@ def mainp():
     totals(total_counter, LENGHTS.j_n)
     j_t1 = time.time()
     j_timer = j_t1-j_t0 # Jimms timer
-    print("Page loads took", '{:.2f}'.format(j_timer - (LENGHTS.j_n * BASE.timelimit)), "seconds for", LENGHTS.j_n, "item(s)")
+    print("Page loads took", '{:.2f}'.format(abs(j_timer - (LENGHTS.j_n * BASE.timelimit))), "seconds for", LENGHTS.j_n, "item(s)")
 
 try:
     mainp()
