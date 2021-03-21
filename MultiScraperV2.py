@@ -204,6 +204,7 @@ def mainp():
     total_counter = 0
     vk_n = 0 # List item counter
     vk_t0 = time.time() # Start time
+    import progressbar # Local import
     while True: # Verkkokauppa.com
         try:
             url = vk_url_list[vk_n] # Getting the url line by line
@@ -211,12 +212,11 @@ def mainp():
             price_fixed = vk_pricescraper(html) # Getting price
             name = vk_namescraper(html) # Getting product name
             avail = vk_avaibscraper(html) # Getting availability
+            progressbar.progress_bar2(LENGHTS.vk_n - 1, vk_n)
             if avail == "available for order": # If the avail is good we print the details
                 total_counter = printer(price_fixed, name, avail, total_counter)
             elif BASE.debug == 1: # If debug is on
                 print(f"{name} price: {price_fixed} eur, status: {avail}") # Prints all lines
-            if vk_n == LENGHTS.vk_n // 2:
-                print("Halfway done.....")
             vk_n += 1 # Counter
             time.sleep(BASE.timelimit) # For now to not spam
         except Exception: # If vk links aren't found
@@ -237,14 +237,13 @@ def mainp():
             url = j_url_list[j_n]
             html = get_html(url)
             name, price_fixed, avail = j_scraper(html)
+            progressbar.progress_bar2(LENGHTS.j_n - 1, j_n)
             if avail.startswith("0 kpl web"):
                 pass
             else:
                 total_counter = printer(price_fixed, name, avail,total_counter)
             if BASE.debug == 1:
                 print(f"{name} price: {price_fixed} eur, status: {avail}")
-            if vk_n == LENGHTS.j_n // 2:
-                print("Halfway done.....")
             j_n += 1
             time.sleep(BASE.timelimit) # For now to not spam
         except Exception:
