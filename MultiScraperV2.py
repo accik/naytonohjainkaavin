@@ -7,9 +7,9 @@ import re # For regex operations
 import time # For time
 
 class BASE():
-    version = 2.1
-    datafile = "example_datafiles/lu_data.txt" # This the default file, change to your <datafile>.txt
-    timelimit = 3 # Change if needed
+    version = 2.2
+    datafile = "example_datafiles/full_list.txt" # This the default file, change to your <datafile>.txt
+    timelimit = 3 # Default value
     debug = 0 # To monitor debug status
 
 class LENGHTS(): # Global class to track file lengths
@@ -146,9 +146,13 @@ def vk_namescraper(html):
     return name
 
 def vk_avaibscraper(html):
-    pattern = "out of stock|available for order"
+    pattern = "out of stock|available for order|in stock"
     avail = re.findall(pattern, html)
-    avail = avail[0]
+    try:
+        avail = avail[0]
+    except Exception:
+        print(f"{bcolors.WARNING}Availability not found{bcolors.ENDC}")
+        avail = "Null"
     return avail
 
 def printer(price_fixed, name, avail, total_counter):
@@ -176,16 +180,13 @@ def arg_parser(): # Enabling file loading from arguments and debug prints
                 BASE.datafile = filename # Setting the filename global variable
             elif item == "-t":
                 timelimit = int(argv_list[n + 1])
-                print(f"Timelimit was set to {timelimit} seconds")
-                BASE.timelimit = timelimit
+                if timelimit == BASE.timelimit:
+                    pass
+                else:
+                    print(f"Timelimit was set to {timelimit} seconds")
+                    BASE.timelimit = timelimit
             elif item == "-h":
-                print("Help page")
-                print("")
-                print("Usage:")
-                print("use -f <filename> to load specific file")
-                print("-d to activate debug prints")
-                print("-t to change timelimit")
-                print("")
+                print("Help page"+'\n'+""+'\n'+"Usage:"+'\n'+"use -f <filename> to load specific file"+'\n'+"-d to activate debug prints"+'\n'+"-t to change timelimit"+'\n'+"")
                 sys.exit(0)
             elif BASE.datafile != "data.txt": # Not sure
                 pass
@@ -204,6 +205,7 @@ def mainp():
     total_counter = 0
     vk_n = 0 # List item counter
     vk_t0 = time.time() # Start time
+    import progressbar # Local import
     while True: # Verkkokauppa.com
         try:
             url = vk_url_list[vk_n] # Getting the url line by line
@@ -211,10 +213,13 @@ def mainp():
             price_fixed = vk_pricescraper(html) # Getting price
             name = vk_namescraper(html) # Getting product name
             avail = vk_avaibscraper(html) # Getting availability
+            progressbar.progress_bar2(LENGHTS.vk_n - 1, vk_n)
             if avail == "available for order": # If the avail is good we print the details
                 total_counter = printer(price_fixed, name, avail, total_counter)
+            elif avail == "in stock": # New version
+                total_counter = printer(price_fixed, name, avail, total_counter)
             elif BASE.debug == 1: # If debug is on
-                print(f"{name} price: {price_fixed} eur, status: {avail}") # Prints all lines
+                print(f"Debuginfo {name} price: {price_fixed} eur, status: {avail}") # Prints all lines
             vk_n += 1 # Counter
             time.sleep(BASE.timelimit) # For now to not spam
         except Exception: # If vk links aren't found
@@ -225,7 +230,7 @@ def mainp():
     totals(total_counter, LENGHTS.vk_n)
     vk_t1 = time.time() # End time
     vk_timer = vk_t1-vk_t0 # Verkkokauppa timer
-    print("Page loads took", '{:.2f}'.format(vk_timer - (LENGHTS.vk_n * BASE.timelimit)), "seconds for", LENGHTS.vk_n, "item(s)") # Two decimals fine?
+    print("Page loads took", '{:.2f}'.format(abs(vk_timer - (LENGHTS.vk_n * BASE.timelimit))), "seconds for", LENGHTS.vk_n, "item(s)") # Two decimals fine?
     print("Checking for Jimms URLs")
     total_counter = 0 # Resetting the total for the next site
     j_t0 = time.time()
@@ -235,6 +240,7 @@ def mainp():
             url = j_url_list[j_n]
             html = get_html(url)
             name, price_fixed, avail = j_scraper(html)
+            progressbar.progress_bar2(LENGHTS.j_n - 1, j_n)
             if avail.startswith("0 kpl web"):
                 pass
             else:
@@ -251,7 +257,7 @@ def mainp():
     totals(total_counter, LENGHTS.j_n)
     j_t1 = time.time()
     j_timer = j_t1-j_t0 # Jimms timer
-    print("Page loads took", '{:.2f}'.format(j_timer - (LENGHTS.j_n * BASE.timelimit)), "seconds for", LENGHTS.j_n, "item(s)")
+    print("Page loads took", '{:.2f}'.format(abs(j_timer - (LENGHTS.j_n * BASE.timelimit))), "seconds for", LENGHTS.j_n, "item(s)")
 
 try:
     mainp()

@@ -1,7 +1,7 @@
 .git
 .vs
 .vscode
-.__pycache__
+__pycache__/
 *.png
 *.jpg
 testi.py
@@ -11,3 +11,4 @@ testi2.py
 *.html
 *.txt
 *.pdf
+vk_outletscanner.py
