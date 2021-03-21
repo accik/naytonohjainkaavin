@@ -216,8 +216,10 @@ def mainp():
             progressbar.progress_bar2(LENGHTS.vk_n - 1, vk_n)
             if avail == "available for order": # If the avail is good we print the details
                 total_counter = printer(price_fixed, name, avail, total_counter)
+            elif avail == "in stock": # New version
+                total_counter = printer(price_fixed, name, avail, total_counter)
             elif BASE.debug == 1: # If debug is on
-                print(f"{name} price: {price_fixed} eur, status: {avail}") # Prints all lines
+                print(f"Debuginfo {name} price: {price_fixed} eur, status: {avail}") # Prints all lines
             vk_n += 1 # Counter
             time.sleep(BASE.timelimit) # For now to not spam
         except Exception: # If vk links aren't found

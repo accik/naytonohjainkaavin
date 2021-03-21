@@ -33,5 +33,3 @@ def progress_bar2(total, i): # One i at the time
     sys.stdout.flush()
     time.sleep(0.005)
     return None
-
-# print(testi().y)
