@@ -18,6 +18,7 @@ Ei takuuta tai lupausta toiminnasta.
  - Datatiedostoon laita yksi tuotelinkki per rivi, esimerkin mukaan. Mahdolliset verkkokaupan linkit ensin.
  - Laita tiedoston sijainti riville 11 tai käytä argumenttia ```
  -f <datatiedosto>```
+ - Esimerkiksi: ```python3 MultiScraperV2.py -f example_datafiles/full_list.txt -t 3```
 
 **Huomautuksia**
 
