@@ -7,9 +7,9 @@ import re # For regex operations
 import time # For time
 
 class BASE():
-    version = 2.1
-    datafile = "example_datafiles/lu_data.txt" # This the default file, change to your <datafile>.txt
-    timelimit = 3 # Change if needed
+    version = 2.2
+    datafile = "example_datafiles/full_list.txt" # This the default file, change to your <datafile>.txt
+    timelimit = 3 # Default value
     debug = 0 # To monitor debug status
 
 class LENGHTS(): # Global class to track file lengths
@@ -146,9 +146,13 @@ def vk_namescraper(html):
     return name
 
 def vk_avaibscraper(html):
-    pattern = "out of stock|available for order"
+    pattern = "out of stock|available for order|in stock"
     avail = re.findall(pattern, html)
-    avail = avail[0]
+    try:
+        avail = avail[0]
+    except Exception:
+        print(f"{bcolors.WARNING}Availability not found{bcolors.ENDC}")
+        avail = "Null"
     return avail
 
 def printer(price_fixed, name, avail, total_counter):
@@ -176,16 +180,13 @@ def arg_parser(): # Enabling file loading from arguments and debug prints
                 BASE.datafile = filename # Setting the filename global variable
             elif item == "-t":
                 timelimit = int(argv_list[n + 1])
-                print(f"Timelimit was set to {timelimit} seconds")
-                BASE.timelimit = timelimit
+                if timelimit == BASE.timelimit:
+                    pass
+                else:
+                    print(f"Timelimit was set to {timelimit} seconds")
+                    BASE.timelimit = timelimit
             elif item == "-h":
-                print("Help page")
-                print("")
-                print("Usage:")
-                print("use -f <filename> to load specific file")
-                print("-d to activate debug prints")
-                print("-t to change timelimit")
-                print("")
+                print("Help page"+'\n'+""+'\n'+"Usage:"+'\n'+"use -f <filename> to load specific file"+'\n'+"-d to activate debug prints"+'\n'+"-t to change timelimit"+'\n'+"")
                 sys.exit(0)
             elif BASE.datafile != "data.txt": # Not sure
                 pass
