@@ -28,6 +28,6 @@ Ei takuuta tai lupausta toiminnasta.
 
 **Tulevia ominaisuuksia**
 
- - Muiden tuotteiden kaavin (Verkkokaupassa)
- - Laskuri tai ilmoitus jos tuote on saatavilla. Julkaistu nimellä MultiScraperV2.py
- - Tiedoston tai ominaisuuksien antaminen parametrinä ohjelmalle.
+ - Muiden tuotteiden kaavin (Verkkokaupassa) Ei testattu
+ - ~~Laskuri tai ilmoitus jos tuote on saatavilla. Julkaistu nimellä MultiScraperV2.py~~ Valmis
+ - ~~Tiedoston tai ominaisuuksien antaminen parametrinä ohjelmalle.~~ Valmis: ```-f, -d, -t```
