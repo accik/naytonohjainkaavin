@@ -7,10 +7,10 @@ import re # For regex operations
 import time # For time
 
 class BASE():
-    version = 2.2
+    version = 2.21
     datafile = "example_datafiles/full_list.txt" # This the default file, change to your <datafile>.txt
     timelimit = 3 # Default value
-    debug = 0 # To monitor debug status
+    debug = 0 # To monitor debug status, only set here to force
 
 class LENGHTS(): # Global class to track file lengths
     total_url_list_len = 0
@@ -180,9 +180,7 @@ def arg_parser(): # Enabling file loading from arguments and debug prints
                 BASE.datafile = filename # Setting the filename global variable
             elif item == "-t":
                 timelimit = int(argv_list[n + 1])
-                if timelimit == BASE.timelimit:
-                    pass
-                else:
+                if timelimit != BASE.timelimit:
                     print(f"Timelimit was set to {timelimit} seconds")
                     BASE.timelimit = timelimit
             elif item == "-h":
@@ -210,9 +208,12 @@ def mainp():
         try:
             url = vk_url_list[vk_n] # Getting the url line by line
             html = get_html(url) # Getting the raw html
-            price_fixed = vk_pricescraper(html) # Getting price
-            name = vk_namescraper(html) # Getting product name
-            avail = vk_avaibscraper(html) # Getting availability
+            if html == "": # If the html value is empty/error happened we skip
+                pass       # Best for now
+            else:
+                price_fixed = vk_pricescraper(html) # Getting price
+                name = vk_namescraper(html) # Getting product name
+                avail = vk_avaibscraper(html) # Getting availability
             progressbar.progress_bar2(LENGHTS.vk_n - 1, vk_n)
             if avail == "available for order": # If the avail is good we print the details
                 total_counter = printer(price_fixed, name, avail, total_counter)
@@ -263,4 +264,5 @@ try:
     mainp()
 except KeyboardInterrupt:
     print(f"{bcolors.WARNING}Stopping......{bcolors.ENDC}")
+    time.sleep(0.1)
     sys.exit(0)
