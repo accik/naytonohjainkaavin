@@ -121,7 +121,7 @@ def j_scraper(html):
         avail = avail.replace("</div></div>", "")
         avail = avail + " web"
     except Exception:
-        avail = "0 kpl web" # Skipping the check and hardcoding an error value
+        avail = "Not found" # Skipping the check and hardcoding an error value
     return name, price_fixed, avail
 
 def vk_pricescraper(html):
@@ -261,7 +261,8 @@ def mainp():
     print("Page loads took", '{:.2f}'.format(abs(j_timer - (LENGHTS.j_n * BASE.timelimit))), "seconds for", LENGHTS.j_n, "item(s)")
 
 try:
-    mainp()
+    if __name__ == "__main__":
+        mainp()
 except KeyboardInterrupt:
     print(f"{bcolors.WARNING}Stopping......{bcolors.ENDC}")
     time.sleep(0.1)
