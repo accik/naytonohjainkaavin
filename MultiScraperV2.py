@@ -86,7 +86,9 @@ def get_html(url):
             if BASE.debug == 1:
                 print("404 url:", url) # DEBUG
                 import findlinefromfile # local import
-                findlinefromfile.check(url, BASE.datafile) # Prints linenumber where url is located
+                s, n = findlinefromfile.check(url, BASE.datafile) # Prints linenumber where url is located
+                if s == True:
+                    print("Line number:", n)
         elif err.code == 403: # Forbidden
             print(f"{bcolors.WARNING}HTTP Error 403 forbidden, most likely getting rate limited. Stopping{bcolors.ENDC}")
             sys.exit(0)
