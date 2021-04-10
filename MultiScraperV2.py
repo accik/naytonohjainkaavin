@@ -57,7 +57,7 @@ def importer(): # Loading URL from a file specified
             vk_url_list.append(row)
             LENGHTS.vk_n += 1
         else:
-            print("Not supported line/URL")
+            print("Not supported line/URL. Line:", row, "line number:", (LENGHTS.j_n + LENGHTS.vk_n + 1)) # Prints what line is not allowed
             # continue
     f.close() # Closing the file
     LENGHTS.total_url_list_len = LENGHTS.vk_n + LENGHTS.j_n # Calculating total lines
@@ -85,6 +85,8 @@ def get_html(url):
             html = "" # Just to make sure
             if BASE.debug == 1:
                 print("404 url:", url) # DEBUG
+                import findlinefromfile # local import
+                findlinefromfile.check(url, BASE.datafile) # Prints linenumber where url is located
         elif err.code == 403: # Forbidden
             print(f"{bcolors.WARNING}HTTP Error 403 forbidden, most likely getting rate limited. Stopping{bcolors.ENDC}")
             sys.exit(0)
