@@ -5,6 +5,8 @@ from urllib.error import HTTPError
 from bs4 import BeautifulSoup # To properly manage html tags later
 import re # For regex operations
 import time # For time
+import progressbar # Local import
+import findlinefromfile # local import
 
 class BASE():
     version = 2.21
@@ -85,7 +87,6 @@ def get_html(url):
             html = "" # Just to make sure
             if BASE.debug == 1:
                 print("404 url:", url) # DEBUG
-                import findlinefromfile # local import
                 s, n = findlinefromfile.check(url, BASE.datafile) # Prints linenumber where url is located
                 if s == True:
                     print("Line number:", n)
@@ -114,7 +115,7 @@ def j_scraper(html):
         name = name.replace(" -näytönohjain", "")
         name = "'" + name + "'"
     except Exception: # If the search fails at some point
-        # print("ERRORTEST")
+        print(f"{bcolors.WARNING}Error getting title, price or name{bcolors.ENDC}")
         price_fixed = 0 # Hardcoding values to be sure
         name = ""
     try: # Getting the status of the product
@@ -171,7 +172,6 @@ def arg_parser(): # Enabling file loading from arguments and debug prints
     n = 0
     try:
         argv_list = sys.argv[1:] # Making a list out of the arguments minus the filename
-        # print("Argumentlist:", argv_list) # DEBUG
         for i in range(len(argv_list)): # Going through the list
             item = argv_list[i]
             if item == "-d": # If the given argument is -d
@@ -180,7 +180,6 @@ def arg_parser(): # Enabling file loading from arguments and debug prints
             elif item == "-f":
                 filename = argv_list[n + 1]
                 print(f"{bcolors.OKBLUE}Loaded a datafile from argument \"{filename}\"{bcolors.ENDC}")
-                # print("Datafile name/path is", filename)
                 BASE.datafile = filename # Setting the filename global variable
             elif item == "-t":
                 timelimit = int(argv_list[n + 1])
@@ -192,7 +191,7 @@ def arg_parser(): # Enabling file loading from arguments and debug prints
                 sys.exit(0)
             elif BASE.datafile != "data.txt": # Not sure
                 pass
-            else: # Kinda works
+            else: # Kinda works, not sure
                 print("Argument", item, "not identified.")
             n+=1
     except Exception: # In case user input is somehow wrong
@@ -207,7 +206,6 @@ def mainp():
     total_counter = 0
     vk_n = 0 # List item counter
     vk_t0 = time.time() # Start time
-    import progressbar # Local import
     while True: # Verkkokauppa.com
         try:
             url = vk_url_list[vk_n] # Getting the url line by line
@@ -229,7 +227,7 @@ def mainp():
             time.sleep(BASE.timelimit) # For now to not spam
         except Exception: # If vk links aren't found
             print("Verkkokauppa.com links not found, skipping")
-            break
+            break         # We break from the loop
         if vk_n == LENGHTS.vk_n: # Stopping when list ends
             break
     totals(total_counter, LENGHTS.vk_n)
@@ -265,7 +263,7 @@ def mainp():
     print("Page loads took", '{:.2f}'.format(abs(j_timer - (LENGHTS.j_n * BASE.timelimit))), "seconds for", LENGHTS.j_n, "item(s)")
 
 try:
-    if __name__ == "__main__":
+    if __name__ == "__main__": # Fancy
         mainp()
 except KeyboardInterrupt:
     print(f"{bcolors.WARNING}Stopping......{bcolors.ENDC}")
