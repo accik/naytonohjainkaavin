@@ -10,6 +10,5 @@ def check(text, filename):
     for line in datafile:
         n += 1
         if text in line:
-            print("Line:", n)
-            return True
+            return True, n
     return False  # Because you finished the search without finding

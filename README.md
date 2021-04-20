@@ -13,7 +13,7 @@ Ei takuuta tai lupausta toiminnasta.
 
 **Käyttö**
 
- - Asenna ylläolevat kirjastot (pip install tai requirements.txt)
+ - Asenna ylläolevat kirjastot (``` pip3 install -r requirements.txt ```)
  - Luo datatiedosto tai käytä esimerkkinä data.txt
  - Datatiedostoon laita yksi tuotelinkki per rivi, esimerkin mukaan. Mahdolliset verkkokaupan linkit ensin.
  - Laita tiedoston sijainti riville 11 tai käytä argumenttia ```
@@ -27,8 +27,14 @@ Ei takuuta tai lupausta toiminnasta.
  - "user_agent" ja "headers" on valittu omien seikkojen mukaan, muokkaa tarvittaessa.
  - Gigantti kaavin ei helposti mahdollinen useiden seikkojen vuoksi
 
+**Valmiit listat**
+ - Mukana tulevat listat ovat seuraavat: data.txt, full_list.txt ja shorttestdata.txt
+ - Nopeaan testaamiseen suosittelen data.txt. 
+ - Full_list.txt sisältää kaikki 3060ti, 3070 ja 3080 Verkkokaupalta ja Jimmssiltä. Nämä voisi nimetä toki paremmin.
+
 **Tulevia ominaisuuksia**
 
  - Muiden tuotteiden kaavin (Verkkokaupassa) Ei testattu
+ - Datalistojen uudelleen nimeäminen ja paremmat listat. + Niille oma .md tiedosto.
  - ~~Laskuri tai ilmoitus jos tuote on saatavilla. Julkaistu nimellä MultiScraperV2.py~~ Valmis
  - ~~Tiedoston tai ominaisuuksien antaminen parametrinä ohjelmalle.~~ Valmis: ```-f, -d, -t```
