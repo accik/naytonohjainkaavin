@@ -10,10 +10,10 @@ import findlinefromfile # local import
 
 class BASE():
     version = 2.22
-    version_name = "TESTING:ALPHA"
+    version_name = "TESTING:BETA"
     datafile = "example_datafiles/testi.txt" # This the default file, change to your <datafile>.txt
     timelimit = 3 # Default value
-    debug = 1 # To monitor debug status, only set here to force
+    debug = 0 # To monitor debug status, only set here to force
 
 class LENGHTS(): # Global class to track file lengths
     total_url_list_len = 0
@@ -73,7 +73,7 @@ def importer(): # Loading URL from a file specified
     return vk_url_list, j_url_list, pros_list
 
 def start():
-    print(f"{bcolors.HEADER}Welcome to version {BASE.version} of the program!{bcolors.ENDC}")
+    print(f"{bcolors.HEADER}Welcome to version {BASE.version} {BASE.version_name} of the program!{bcolors.ENDC}")
     print(f"{bcolors.WARNING}Attention! Currently using a 'cooldown' in searches of {BASE.timelimit} seconds{bcolors.ENDC}") # New addition
     time.sleep(0.5)
     print("Starting with datafile:", BASE.datafile)
@@ -291,7 +291,10 @@ def mainp():
         html = get_html(url)
         name, price_fixed, avail = pros_scraper(html)
         progressbar.progress_bar2(LENGHTS.pro_n - 1, pro_n)
-        total_counter = printer(price_fixed, name, avail, total_counter)
+        if avail.startswith("Tilattu"):
+            pass
+        else:
+            total_counter = printer(price_fixed, name, avail, total_counter)
         pro_n += 1
         time.sleep(BASE.timelimit) # For now to not spam
         if pro_n == LENGHTS.pro_n:
