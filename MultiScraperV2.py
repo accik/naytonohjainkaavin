@@ -9,15 +9,17 @@ import progressbar # Local import
 import findlinefromfile # local import
 
 class BASE():
-    version = 2.21
-    datafile = "example_datafiles/full_list.txt" # This the default file, change to your <datafile>.txt
+    version = 2.22
+    version_name = "TESTING:ALPHA"
+    datafile = "example_datafiles/testi.txt" # This the default file, change to your <datafile>.txt
     timelimit = 3 # Default value
-    debug = 0 # To monitor debug status, only set here to force
+    debug = 1 # To monitor debug status, only set here to force
 
 class LENGHTS(): # Global class to track file lengths
     total_url_list_len = 0
     vk_n = 0
     j_n = 0
+    pro_n = 0
 
 class bcolors: # Grabbed from https://stackoverflow.com/questions/287871/how-to-print-colored-text-to-the-terminal
     # These should work on every terminal
@@ -35,6 +37,7 @@ def importer(): # Loading URL from a file specified
     filename = BASE.datafile
     vk_url_list = [] # Making the lists
     j_url_list = []
+    pros_list = []
     try:
         f = open(filename, "r", encoding='utf-8') # Opening the file with read
     except FileNotFoundError:
@@ -58,13 +61,16 @@ def importer(): # Loading URL from a file specified
         elif row.startswith("https://www.verkkokauppa.com"):
             vk_url_list.append(row)
             LENGHTS.vk_n += 1
+        elif row.startswith("https://www.proshop.fi/"):
+            pros_list.append(row)
+            LENGHTS.pro_n += 1
         else:
             print("Not supported line/URL. Line:", row, "line number:", (LENGHTS.j_n + LENGHTS.vk_n + 1)) # Prints what line is not allowed
             # continue
     f.close() # Closing the file
-    LENGHTS.total_url_list_len = LENGHTS.vk_n + LENGHTS.j_n # Calculating total lines
+    LENGHTS.total_url_list_len = LENGHTS.vk_n + LENGHTS.j_n + LENGHTS.pro_n # Calculating total lines
     print(f"{bcolors.OKGREEN}Successfully loaded total of {LENGHTS.total_url_list_len} rows from the file{bcolors.ENDC}")
-    return vk_url_list, j_url_list
+    return vk_url_list, j_url_list, pros_list
 
 def start():
     print(f"{bcolors.HEADER}Welcome to version {BASE.version} of the program!{bcolors.ENDC}")
@@ -73,7 +79,7 @@ def start():
     print("Starting with datafile:", BASE.datafile)
     return None
 
-def get_html(url):
+def get_html(url): # This is going to be replaced with url_to_html.py
     user_agent = "Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:85.0) Gecko/20100101 Firefox/85.0" # Use what user agent you want, new one to be sure
     headers = {'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8','User-Agent': user_agent} # header from Google :P
     req = urllib.request.Request(url,None, headers) # Making the request
@@ -160,6 +166,21 @@ def vk_avaibscraper(html):
         avail = "Null"
     return avail
 
+def pros_scraper(html):
+    soup = BeautifulSoup(html, 'html.parser')
+    price = soup.find_all("span", {"class": "site-currency-attention"})
+    price = str(price[0])
+    price = price.rstrip()
+    price = price.replace("<span class=\"site-currency-attention\">", "")
+    price_fixed = price.replace("</span>", "")
+    name = soup.find("meta", property="og:title").get('content')
+    name = name.replace("GDDR6 RAM - Näytönohjaimet", "")
+    avail = soup.find_all("div", {"class": "site-stock-text site-inline"})
+    avail = str(avail[0])
+    avail = avail.replace("<div class=\"site-stock-text site-inline\">", "")
+    avail = avail.replace("</div>", "")
+    return name, price_fixed, avail
+
 def printer(price_fixed, name, avail, total_counter):
     print("This product is in stock:", name, "price:", price_fixed, "euro", "availability:", avail)
     total_counter += 1
@@ -168,7 +189,7 @@ def printer(price_fixed, name, avail, total_counter):
 def totals(total_avail, total_items):
     print("Found total", total_avail, "out of",total_items, "products available")
 
-def arg_parser(): # Enabling file loading from arguments and debug prints
+def arg_parser(): # Enabling file loading from arguments and debug prints This is to be replaced by arg_parser.py
     n = 0
     try:
         argv_list = sys.argv[1:] # Making a list out of the arguments minus the filename
@@ -199,9 +220,9 @@ def arg_parser(): # Enabling file loading from arguments and debug prints
             sys.exit(0)
 
 def mainp():
-    arg_parser()
+    arg_parser() # To be replaced by arg_parser.py
     start()
-    vk_url_list, j_url_list = importer()
+    vk_url_list, j_url_list, pros_list = importer()
     print("Checking for Verkkokauppa.com URLs")
     total_counter = 0
     vk_n = 0 # List item counter
@@ -261,7 +282,24 @@ def mainp():
     j_t1 = time.time()
     j_timer = j_t1-j_t0 # Jimms timer
     print("Page loads took", '{:.2f}'.format(abs(j_timer - (LENGHTS.j_n * BASE.timelimit))), "seconds for", LENGHTS.j_n, "item(s)")
-
+    
+    total_counter = 0
+    pro_t0 = time.time()
+    pro_n = 0
+    while True: # Proshop
+        url = pros_list[pro_n]
+        html = get_html(url)
+        name, price_fixed, avail = pros_scraper(html)
+        progressbar.progress_bar2(LENGHTS.pro_n - 1, pro_n)
+        total_counter = printer(price_fixed, name, avail, total_counter)
+        pro_n += 1
+        time.sleep(BASE.timelimit) # For now to not spam
+        if pro_n == LENGHTS.pro_n:
+            break
+    totals(total_counter, LENGHTS.pro_n)
+    pro_t1 = time.time()
+    pro_timer = pro_t1-pro_t0
+    print("Page loads took", '{:.2f}'.format(abs(pro_timer - (LENGHTS.pro_n * BASE.timelimit))), "seconds for", LENGHTS.pro_n, "item(s)")
 try:
     if __name__ == "__main__": # Fancy
         mainp()
