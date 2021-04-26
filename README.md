@@ -22,7 +22,7 @@ Ei takuuta tai lupausta toiminnasta.
 
 **Huomautuksia**
 
- - Tuetut nettisivut ovat Verkkokauppa.com (*Vain* näytönohjaimet) ja Jimms.fi (muut tuotteet *saattavat* toimia)
+ - Tuetut nettisivut ovat Verkkokauppa.com (*Vain* näytönohjaimet), Jimms.fi (muut tuotteet *saattavat* toimia) ja alustavasti Proshop.fi (*Vain* näytönohjaimet)
  - Haut on tarkoituksella rajoitettu yksi per 3 sekuntia ("timelimit")
  - "user_agent" ja "headers" on valittu omien seikkojen mukaan, muokkaa tarvittaessa.
  - Gigantti kaavin ei helposti mahdollinen useiden seikkojen vuoksi
