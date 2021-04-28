@@ -9,11 +9,11 @@ import progressbar # Local import
 import findlinefromfile # local import
 
 class BASE():
-    version = 2.22
+    version = 2.23
     version_name = "TESTING:BETA"
-    datafile = "example_datafiles/testi.txt" # This the default file, change to your <datafile>.txt
+    datafile = "example_datafiles/proshop.txt" # This the default file, change to your <datafile>.txt
     timelimit = 3 # Default value
-    debug = 0 # To monitor debug status, only set here to force
+    debug = 1 # To monitor debug status, only set here to force
 
 class LENGHTS(): # Global class to track file lengths
     total_url_list_len = 0
@@ -168,17 +168,23 @@ def vk_avaibscraper(html):
 
 def pros_scraper(html):
     soup = BeautifulSoup(html, 'html.parser')
-    price = soup.find_all("span", {"class": "site-currency-attention"})
-    price = str(price[0])
-    price = price.rstrip()
-    price = price.replace("<span class=\"site-currency-attention\">", "")
-    price_fixed = price.replace("</span>", "")
-    name = soup.find("meta", property="og:title").get('content')
-    name = name.replace("GDDR6 RAM - Näytönohjaimet", "")
-    avail = soup.find_all("div", {"class": "site-stock-text site-inline"})
-    avail = str(avail[0])
-    avail = avail.replace("<div class=\"site-stock-text site-inline\">", "")
-    avail = avail.replace("</div>", "")
+    price_fixed = "NaN"
+    name = ""
+    avail = "Tilattu"
+    try:
+        price = soup.find_all("span", {"class": "site-currency-attention"})
+        price = str(price[0])
+        price = price.rstrip()
+        price = price.replace("<span class=\"site-currency-attention\">", "")
+        price_fixed = price.replace("</span>", "")
+        name = soup.find("meta", property="og:title").get('content')
+        name = name.replace("GDDR6 RAM - Näytönohjaimet", "")
+        avail = soup.find_all("div", {"class": "site-stock-text site-inline"})
+        avail = str(avail[0])
+        avail = avail.replace("<div class=\"site-stock-text site-inline\">", "")
+        avail = avail.replace("</div>", "")
+    except Exception:
+        pass
     return name, price_fixed, avail
 
 def printer(price_fixed, name, avail, total_counter):
