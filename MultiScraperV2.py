@@ -11,9 +11,9 @@ import findlinefromfile # local import
 class BASE():
     version = 2.23
     version_name = "TESTING:BETA"
-    datafile = "example_datafiles/proshop.txt" # This the default file, change to your <datafile>.txt
+    datafile = "example_datafiles/full_list.txt" # This the default file, change to your <datafile>.txt
     timelimit = 3 # Default value
-    debug = 1 # To monitor debug status, only set here to force
+    debug = 0 # To monitor debug status, only set here to force
 
 class LENGHTS(): # Global class to track file lengths
     total_url_list_len = 0
