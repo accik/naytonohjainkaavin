@@ -5,8 +5,9 @@ from urllib.error import HTTPError
 from bs4 import BeautifulSoup # To properly manage html tags later
 import re # For regex operations
 import time # For time
-import progressbar # Local import
-import findlinefromfile # local import
+import progressbar      # Local import
+import findlinefromfile # Local import
+import url_to_html      # Local import
 
 class BASE():
     version = 2.23
@@ -65,7 +66,7 @@ def importer(): # Loading URL from a file specified
             pros_list.append(row)
             LENGHTS.pro_n += 1
         else:
-            print("Not supported line/URL. Line:", row, "line number:", (LENGHTS.j_n + LENGHTS.vk_n + 1)) # Prints what line is not allowed
+            print("Not supported line/URL. Line content:", row, "line number:", (LENGHTS.j_n + LENGHTS.vk_n + LENGHTS.pro_n + 1)) # Prints what line is not allowed
             # continue
     f.close() # Closing the file
     LENGHTS.total_url_list_len = LENGHTS.vk_n + LENGHTS.j_n + LENGHTS.pro_n # Calculating total lines
@@ -78,33 +79,6 @@ def start():
     time.sleep(0.5)
     print("Starting with datafile:", BASE.datafile)
     return None
-
-def get_html(url): # This is going to be replaced with url_to_html.py
-    user_agent = "Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:85.0) Gecko/20100101 Firefox/85.0" # Use what user agent you want, new one to be sure
-    headers = {'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8','User-Agent': user_agent} # header from Google :P
-    req = urllib.request.Request(url,None, headers) # Making the request
-    try:
-        page = urlopen(req) # "Opening" the url with previous parameters
-        html_bytes = page.read() # Reading the page
-        html = html_bytes.decode("utf-8") # Decoding to utf-8 to get proper Ä,Ö and Å
-    except HTTPError as err: # https://stackoverflow.com/questions/3193060/catch-specific-http-error-in-python
-        if err.code == 404:
-            print(f"{bcolors.WARNING}HTTP Error 404 with a line, skipping{bcolors.ENDC}")
-            html = "" # Just to make sure
-            if BASE.debug == 1:
-                print("404 url:", url) # DEBUG
-                s, n = findlinefromfile.check(url, BASE.datafile) # Prints linenumber where url is located
-                if s == True:
-                    print("Line number:", n)
-        elif err.code == 403: # Forbidden
-            print(f"{bcolors.WARNING}HTTP Error 403 forbidden, most likely getting rate limited. Stopping{bcolors.ENDC}")
-            sys.exit(0)
-        else:
-            raise
-    except Exception:
-        print(f"{bcolors.FAIL}Cannot access webpage, exiting for now{bcolors.ENDC}") # If we get timed out or other issues
-        sys.exit(0)
-    return html
 
 def j_scraper(html):
     try:
@@ -228,7 +202,7 @@ def arg_parser(): # Enabling file loading from arguments and debug prints This i
 def mainp():
     arg_parser() # To be replaced by arg_parser.py
     start()
-    vk_url_list, j_url_list, pros_list = importer()
+    vk_url_list, j_url_list, pros_list = importer() # Importing all lists
     print("Checking for Verkkokauppa.com URLs")
     total_counter = 0
     vk_n = 0 # List item counter
@@ -236,7 +210,7 @@ def mainp():
     while True: # Verkkokauppa.com
         try:
             url = vk_url_list[vk_n] # Getting the url line by line
-            html = get_html(url) # Getting the raw html
+            html = url_to_html.get_html(url) # Getting the raw html
             if html == "": # If the html value is empty/error happened we skip
                 pass       # Best for now
             else:
@@ -268,7 +242,7 @@ def mainp():
     while True:
         try:
             url = j_url_list[j_n]
-            html = get_html(url)
+            html = url_to_html.get_html(url)
             name, price_fixed, avail = j_scraper(html)
             progressbar.progress_bar2(LENGHTS.j_n - 1, j_n)
             if avail.startswith("0 kpl web"):
@@ -290,11 +264,12 @@ def mainp():
     print("Page loads took", '{:.2f}'.format(abs(j_timer - (LENGHTS.j_n * BASE.timelimit))), "seconds for", LENGHTS.j_n, "item(s)")
     
     total_counter = 0
+    print("Checking for Proshop.fi URLs")
     pro_t0 = time.time()
     pro_n = 0
     while True: # Proshop
         url = pros_list[pro_n]
-        html = get_html(url)
+        html = url_to_html.get_html(url)
         name, price_fixed, avail = pros_scraper(html)
         progressbar.progress_bar2(LENGHTS.pro_n - 1, pro_n)
         if avail.startswith("Tilattu"):
