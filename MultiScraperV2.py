@@ -6,12 +6,12 @@ from bs4 import BeautifulSoup # To properly manage html tags later
 import re # For regex operations
 import time # For time
 import progressbar      # Local import
-import findlinefromfile # Local import
+# import findlinefromfile # Local import Not needed
 import url_to_html      # Local import
 
 class BASE():
-    version = 2.23
-    version_name = "TESTING:BETA"
+    version = 2.3
+    version_name = "RELEASE:CANDIDATE"
     datafile = "example_datafiles/full_list.txt" # This the default file, change to your <datafile>.txt
     timelimit = 3 # Default value
     debug = 0 # To monitor debug status, only set here to force
@@ -53,12 +53,12 @@ def importer(): # Loading URL from a file specified
         except Exception:
             print(f"{bcolors.FAIL}Error reading line from the file{bcolors.ENDC}")
             sys.exit(0)
-        row = row.rstrip()
-        if len(row) == 0:
-            break
+        row = row.rstrip() # Cleaning the line from possible newline etc
+        if len(row) == 0: # If line lenght is 0 ie. empty, we found file end.
+            break         # So stopping the reading loop
         elif row.startswith("https://www.jimms.fi/"): # Checking if the line matches what we want
-            j_url_list.append(row)
-            LENGHTS.j_n += 1
+            j_url_list.append(row)                    # If ok, we add that to a list
+            LENGHTS.j_n += 1                          # And add that to the lenght class
         elif row.startswith("https://www.verkkokauppa.com"):
             vk_url_list.append(row)
             LENGHTS.vk_n += 1
@@ -67,13 +67,14 @@ def importer(): # Loading URL from a file specified
             LENGHTS.pro_n += 1
         else:
             print("Not supported line/URL. Line content:", row, "line number:", (LENGHTS.j_n + LENGHTS.vk_n + LENGHTS.pro_n + 1)) # Prints what line is not allowed
+            # This doesn't understand if two adjacent lines are incorrect
             # continue
     f.close() # Closing the file
     LENGHTS.total_url_list_len = LENGHTS.vk_n + LENGHTS.j_n + LENGHTS.pro_n # Calculating total lines
     print(f"{bcolors.OKGREEN}Successfully loaded total of {LENGHTS.total_url_list_len} rows from the file{bcolors.ENDC}")
     return vk_url_list, j_url_list, pros_list
 
-def start():
+def start(): # Kinda useless but fun
     print(f"{bcolors.HEADER}Welcome to version {BASE.version} {BASE.version_name} of the program!{bcolors.ENDC}")
     print(f"{bcolors.WARNING}Attention! Currently using a 'cooldown' in searches of {BASE.timelimit} seconds{bcolors.ENDC}") # New addition
     time.sleep(0.5)
@@ -109,7 +110,7 @@ def j_scraper(html):
         avail = "Not found" # Skipping the check and hardcoding an error value
     return name, price_fixed, avail
 
-def vk_pricescraper(html):
+def vk_pricescraper(html): # Waiting for rewrite
     pattern = "\\bcontent=\"\d{2,4}.\d\d\""
     price = re.findall(pattern, html)
     pattern_fixed = "\d{2,4}.\d\d"
@@ -142,7 +143,7 @@ def vk_avaibscraper(html):
 
 def pros_scraper(html):
     soup = BeautifulSoup(html, 'html.parser')
-    price_fixed = "NaN"
+    price_fixed = "NaN" # Hardcoding "bad" values if correct ones are not found
     name = ""
     avail = "Tilattu"
     try:
@@ -161,15 +162,15 @@ def pros_scraper(html):
         pass
     return name, price_fixed, avail
 
-def printer(price_fixed, name, avail, total_counter):
+def printer(price_fixed, name, avail, total_counter): # Prints when product is found and updates the counter
     print("This product is in stock:", name, "price:", price_fixed, "euro", "availability:", avail)
     total_counter += 1
     return total_counter
 
-def totals(total_avail, total_items):
+def totals(total_avail, total_items): # Total print after website complete
     print("Found total", total_avail, "out of",total_items, "products available")
 
-def arg_parser(): # Enabling file loading from arguments and debug prints This is to be replaced by arg_parser.py
+def arg_parser(): # Enabling file loading from arguments and debug prints Current version works, no need to replace
     n = 0
     try:
         argv_list = sys.argv[1:] # Making a list out of the arguments minus the filename
@@ -284,6 +285,7 @@ def mainp():
     pro_t1 = time.time()
     pro_timer = pro_t1-pro_t0
     print("Page loads took", '{:.2f}'.format(abs(pro_timer - (LENGHTS.pro_n * BASE.timelimit))), "seconds for", LENGHTS.pro_n, "item(s)")
+
 try:
     if __name__ == "__main__": # Fancy
         mainp()
