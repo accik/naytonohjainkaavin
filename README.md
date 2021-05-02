@@ -23,14 +23,14 @@ Ei takuuta tai lupausta toiminnasta.
 **Huomautuksia**
 
  - Tuetut nettisivut ovat Verkkokauppa.com (*Vain* näytönohjaimet), Jimms.fi (muut tuotteet *saattavat* toimia) ja alustavasti Proshop.fi (*Vain* näytönohjaimet)
- - Haut on tarkoituksella rajoitettu yksi per 3 sekuntia ("timelimit")
+ - Haut on tarkoituksella rajoitettu yksi per 3 sekuntia ("timelimit", ```-t```)
  - "user_agent" ja "headers" on valittu omien seikkojen mukaan, muokkaa tarvittaessa.
- - Gigantti kaavin ei helposti mahdollinen useiden seikkojen vuoksi
+ - Gigantti kaavin ei helposti mahdollinen useiden teknisten asioiden vuoksi
 
 **Valmiit listat**
  - Mukana tulevat listat ovat seuraavat: data.txt, full_list.txt ja shorttestdata.txt
  - Nopeaan testaamiseen suosittelen data.txt. 
- - Full_list.txt sisältää kaikki 3060ti, 3070 ja 3080 Verkkokaupalta ja Jimmssiltä. Nämä voisi nimetä toki paremmin.
+ - Full_list.txt sisältää kaikki 3060ti, 3070 ja 3080 Verkkokaupalta, Jimmssiltä ja Proshopista. Nämä voisi nimetä toki paremmin...
 
 **Tulevia ominaisuuksia**
 
