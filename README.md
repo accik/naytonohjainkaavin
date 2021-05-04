@@ -19,6 +19,7 @@ Ei takuuta tai lupausta toiminnasta.
  - Laita tiedoston sijainti riville 11 tai käytä argumenttia ```
  -f <datatiedosto>```
  - Esimerkiksi: ```python3 MultiScraperV2.py -f example_datafiles/full_list.txt -t 3```
+ - Uusimmat päivitykset saat suoraan komennolla ```git pull origin master```
 
 **Huomautuksia**
 
@@ -36,5 +37,6 @@ Ei takuuta tai lupausta toiminnasta.
 
  - Muiden tuotteiden kaavin (Verkkokaupassa) Ei testattu
  - Datalistojen uudelleen nimeäminen ja paremmat listat. + Niille oma .md tiedosto.
+ - Automaattinen päivitysominaisuus kuten esim. zsh käyttää.
  - ~~Laskuri tai ilmoitus jos tuote on saatavilla. Julkaistu nimellä MultiScraperV2.py~~ Valmis
  - ~~Tiedoston tai ominaisuuksien antaminen parametrinä ohjelmalle.~~ Valmis: ```-f, -d, -t```
