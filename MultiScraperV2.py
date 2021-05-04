@@ -1,7 +1,4 @@
 import sys
-from urllib.request import urlopen # To open URL provided
-import urllib.request # To make the request
-from urllib.error import HTTPError
 from bs4 import BeautifulSoup # To properly manage html tags later
 import re # For regex operations
 import time # For time
@@ -10,7 +7,7 @@ import progressbar      # Local import
 import url_to_html      # Local import
 
 class BASE():
-    version = 2.3
+    version = 2.31
     version_name = "RELEASE:CANDIDATE"
     datafile = "example_datafiles/full_list.txt" # This the default file, change to your <datafile>.txt
     timelimit = 3 # Default value
@@ -147,11 +144,18 @@ def pros_scraper(html):
     name = ""
     avail = "Tilattu"
     try:
-        price = soup.find_all("span", {"class": "site-currency-attention"})
-        price = str(price[0])
-        price = price.rstrip()
-        price = price.replace("<span class=\"site-currency-attention\">", "")
-        price_fixed = price.replace("</span>", "")
+        try:
+            price = soup.find_all("span", {"class": "site-currency-attention"})
+            price = str(price[0])
+            price = price.rstrip()
+            price = price.replace("<span class=\"site-currency-attention\">", "")
+            price_fixed = price.replace("</span>", "")
+        except IndexError:
+            price = soup.find_all("div", {"class": "site-currency-attention site-currency-campaign"})
+            price = str(price[0])
+            price = price.rstrip()
+            price = price.replace("<div class=\"site-currency-attention site-currency-campaign\">", "")
+            price_fixed = price.replace("</div>", "")
         name = soup.find("meta", property="og:title").get('content')
         name = name.replace("GDDR6 RAM - Näytönohjaimet", "")
         avail = soup.find_all("div", {"class": "site-stock-text site-inline"})
@@ -159,7 +163,10 @@ def pros_scraper(html):
         avail = avail.replace("<div class=\"site-stock-text site-inline\">", "")
         avail = avail.replace("</div>", "")
     except Exception:
-        pass
+        if BASE.debug == 1:
+            raise
+        else:
+            print("Error with a product")
     return name, price_fixed, avail
 
 def printer(price_fixed, name, avail, total_counter): # Prints when product is found and updates the counter
@@ -273,7 +280,7 @@ def mainp():
         html = url_to_html.get_html(url)
         name, price_fixed, avail = pros_scraper(html)
         progressbar.progress_bar2(LENGHTS.pro_n - 1, pro_n)
-        if avail.startswith("Tilattu"):
+        if avail.startswith("Tilattu") or avail.startswith("Tukkurilla"):
             pass
         else:
             total_counter = printer(price_fixed, name, avail, total_counter)
