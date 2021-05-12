@@ -63,7 +63,8 @@ def importer(): # Loading URL from a file specified
             pros_list.append(row)
             LENGHTS.pro_n += 1
         else:
-            print("Not supported line/URL. Line content:", row, "line number:", (LENGHTS.j_n + LENGHTS.vk_n + LENGHTS.pro_n + 1)) # Prints what line is not allowed
+            print(f"{bcolors.FAIL}Not supported line/URL found{bcolors.ENDC}")
+            print("Line content:", row, "line number:", (LENGHTS.j_n + LENGHTS.vk_n + LENGHTS.pro_n + 1)) # Prints what line is not allowed
             # This doesn't understand if two adjacent lines are incorrect
             # continue
     f.close() # Closing the file
@@ -258,7 +259,7 @@ def mainp():
             else:
                 total_counter = printer(price_fixed, name, avail,total_counter)
             if BASE.debug == 1:
-                print(f"{name} price: {price_fixed} eur, status: {avail}")
+                print(f"Debuginfo {name} price: {price_fixed} eur, status: {avail}")
             j_n += 1
             time.sleep(BASE.timelimit) # For now to not spam
         except Exception:
@@ -284,6 +285,8 @@ def mainp():
             pass
         else:
             total_counter = printer(price_fixed, name, avail, total_counter)
+        if BASE.debug == 1:
+                print(f"Debuginfo {name} price: {price_fixed} eur, status: {avail}")
         pro_n += 1
         time.sleep(BASE.timelimit) # For now to not spam
         if pro_n == LENGHTS.pro_n:
