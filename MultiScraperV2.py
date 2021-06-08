@@ -289,7 +289,7 @@ def mainp():
         html = url_to_html.get_html(url)
         name, price_fixed, avail = pros_scraper(html, url)
         progressbar.progress_bar2(LENGHTS.pro_n - 1, pro_n)
-        if avail.startswith("Tilattu") or avail.startswith("Tukkurilla"):
+        if avail.startswith("Tilattu") or avail.startswith("Tukkurilla") or avail.startswith("Tilaustuote"):
             pass
         else:
             total_counter = printer(price_fixed, name, avail, total_counter)
