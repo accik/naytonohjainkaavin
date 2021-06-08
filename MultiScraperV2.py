@@ -7,8 +7,8 @@ import progressbar      # Local import
 import url_to_html      # Local import
 
 class BASE():
-    version = 2.31
-    version_name = "RELEASE:CANDIDATE"
+    version = 2.32
+    version_name = "RELEASE:TESTING/QA"
     datafile = "example_datafiles/full_list.txt" # This the default file, change to your <datafile>.txt
     timelimit = 3 # Default value
     debug = 0 # To monitor debug status, only set here to force
@@ -64,7 +64,8 @@ def importer(): # Loading URL from a file specified
             LENGHTS.pro_n += 1
         else:
             print(f"{bcolors.FAIL}Not supported line/URL found{bcolors.ENDC}")
-            print("Line content:", row, "line number:", (LENGHTS.j_n + LENGHTS.vk_n + LENGHTS.pro_n + 1)) # Prints what line is not allowed
+            line_number = (LENGHTS.j_n + LENGHTS.vk_n + LENGHTS.pro_n + 1)
+            print("Line content:", row, "line number:", line_number) # Prints what line is not allowed
             # This doesn't understand if two adjacent lines are incorrect
             # continue
     f.close() # Closing the file
@@ -109,12 +110,16 @@ def j_scraper(html):
     return name, price_fixed, avail
 
 def vk_pricescraper(html): # Waiting for rewrite
-    pattern = "\\bcontent=\"\d{2,4}.\d\d\""
-    price = re.findall(pattern, html)
-    pattern_fixed = "\d{2,4}.\d\d"
-    price = price[0]
-    price_fixed = re.findall(pattern_fixed,price)
-    price_fixed = price_fixed[0]
+    try: # If product is not for sale, but page is up
+        pattern = "\\bcontent=\"\d{2,4}.\d\d\""
+        price = re.findall(pattern, html)
+        pattern_fixed = "\d{2,4}.\d\d"
+        price = price[0]
+        price_fixed = re.findall(pattern_fixed,price)
+        price_fixed = price_fixed[0]
+    except Exception:
+        print("ERROR price not found") # Printing to console but this could be elsewhere
+        price_fixed = 0 # To make sure
     return price_fixed
 
 def vk_namescraper(html):
@@ -139,7 +144,7 @@ def vk_avaibscraper(html):
         avail = "Null"
     return avail
 
-def pros_scraper(html):
+def pros_scraper(html, url):
     soup = BeautifulSoup(html, 'html.parser')
     price_fixed = "NaN" # Hardcoding "bad" values if correct ones are not found
     name = ""
@@ -156,7 +161,9 @@ def pros_scraper(html):
             price = str(price[0])
             price = price.rstrip()
             price = price.replace("<div class=\"site-currency-attention site-currency-campaign\">", "")
-            price_fixed = price.replace("</div>", "")
+        except Exception: # If product page is found but price is not shown
+            price_fixed = 0 # To make sure
+            print("Produt removed / no price") # To test
         name = soup.find("meta", property="og:title").get('content')
         name = name.replace("GDDR6 RAM - Näytönohjaimet", "")
         avail = soup.find_all("div", {"class": "site-stock-text site-inline"})
@@ -165,6 +172,7 @@ def pros_scraper(html):
         avail = avail.replace("</div>", "")
     except Exception:
         if BASE.debug == 1:
+            print(url)
             raise
         else:
             print("Error with a product")
@@ -279,7 +287,7 @@ def mainp():
     while True: # Proshop
         url = pros_list[pro_n]
         html = url_to_html.get_html(url)
-        name, price_fixed, avail = pros_scraper(html)
+        name, price_fixed, avail = pros_scraper(html, url)
         progressbar.progress_bar2(LENGHTS.pro_n - 1, pro_n)
         if avail.startswith("Tilattu") or avail.startswith("Tukkurilla"):
             pass
