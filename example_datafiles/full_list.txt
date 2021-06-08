@@ -52,7 +52,6 @@ https://www.verkkokauppa.com/fi/product/12085/qbghf/Gigabyte-GeForce-RTX-3080-Ea
 https://www.verkkokauppa.com/fi/product/47599/qbgdj/EVGA-GeForce-RTX-3080-XC3-BLACK-GAMING-naytonohjain-PCI-e-va?list=OZCYkRqcH3cq2h0gq290jqurYbYVLYWqcp3Nb
 https://www.verkkokauppa.com/fi/product/2928/nxgnb/Asus-TUF-RTX3080-O10G-GAMING-naytonohjain-PCI-e-vaylaan?list=OZCYkRqcH3cq2h0gq290jqurYbYVLYWqcp3Nb
 https://www.verkkokauppa.com/fi/product/77727/qndng/Gainward-GeForce-RTX-3080-Phoenix-GS-naytonohjain-PCI-e-vayl?list=OZCYkRqcH3cq2h0gq290jqurYbYVLYWqcp3Nb
-https://www.verkkokauppa.com/fi/product/24756/nxkmq/MSI-GeForce-RTX-3080-GAMING-X-TRIO-10G-naytonohjain-PCI-e-va?list=OZCYkRqcH3cq2h0gq290jqurYbYVLYWqcp3Nb
 https://www.jimms.fi/fi/Product/Show/168157/90-ga27zz-00uanf/asrock-radeon-rx-6800-xt-taichi-x-oc-naytonohjain-16gb-gddr6
 https://www.jimms.fi/fi/Product/Show/167476/11305-02-20g/sapphire-radeon-rx-6800-pulse-naytonohjain-16gb-gddr6
 https://www.jimms.fi/fi/Product/Show/168108/90-ga2azz-00uanf/asrock-radeon-rx-6800-phantom-gaming-naytonohjain-16gb-gddr6
@@ -144,15 +143,12 @@ https://www.jimms.fi/fi/Product/Show/166445/gain-2096/gainward-geforce-rtx-3070-
 https://www.proshop.fi/Naeytoenohjaimet/ASUS-GeForce-RTX-3070-ROG-STRIX-OC-8GB-GDDR6-RAM-Naeytoenohjaimet/2876845
 https://www.proshop.fi/Naeytoenohjaimet/ASUS-GeForce-RTX-3070-TUF-OC-8GB-GDDR6-RAM-Naeytoenohjaimet/2876856
 https://www.proshop.fi/Naeytoenohjaimet/ASUS-GeForce-RTX-3070-DUAL-8GB-GDDR6-RAM-Naeytoenohjaimet/2876851
-https://www.proshop.fi/Naeytoenohjaimet/MSI-GeForce-RTX-3070-SUPRIM-X-8GB-GDDR6-RAM-Naeytoenohjaimet/2885269
 https://www.proshop.fi/Naeytoenohjaimet/Inno3D-GeForce-RTX-3070-Twin-X2-OC-8GB-GDDR6-RAM-Naeytoenohjaimet/2883917
 https://www.proshop.fi/Naeytoenohjaimet/Inno3D-GeForce-RTX-3070-iCHILL-X4-8GB-GDDR6-RAM-Naeytoenohjaimet/2883919
 https://www.proshop.fi/Naeytoenohjaimet/ASUS-GeForce-RTX-3080-ROG-STRIX-OC-White-10GB-GDDR6X-RAM-Naeytoenohjaimet/2911579
 https://www.proshop.fi/Naeytoenohjaimet/ASUS-GeForce-RTX-3060-Ti-DUAL-8GB-GDDR6-RAM-Naeytoenohjaimet/2886988
-https://www.proshop.fi/Naeytoenohjaimet/GIGABYTE-GeForce-RTX-3070-AORUS-Master-8GB-GDDR6-RAM-Naeytoenohjaimet/2878383
 https://www.proshop.fi/Naeytoenohjaimet/ASUS-GeForce-RTX-3080-TUF-10GB-GDDR6X-RAM-Naeytoenohjaimet/2876763
 https://www.proshop.fi/Naeytoenohjaimet/MSI-GeForce-RTX-3080-GAMING-Z-TRIO-10GB-GDDR6X-RAM-Naeytoenohjaimet/2935872
-https://www.proshop.fi/Naeytoenohjaimet/ASUS-GeForce-RTX-3070-EK-8GB-GDDR6-RAM-Naeytoenohjaimet/2911577
 https://www.proshop.fi/Naeytoenohjaimet/ASUS-GeForce-RTX-3080-TUF-OC-10GB-GDDR6X-RAM-Naeytoenohjaimet/2876861
 https://www.proshop.fi/Naeytoenohjaimet/ASUS-GeForce-RTX-3070-ROG-STRIX-White-8GB-GDDR6X-RAM-Naeytoenohjaimet/2911574
 https://www.proshop.fi/Naeytoenohjaimet/ASUS-GeForce-RTX-3070-DUAL-OC-8GB-GDDR6-RAM-Naeytoenohjaimet/2876853
