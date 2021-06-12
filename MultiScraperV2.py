@@ -6,6 +6,8 @@ import progressbar      # Local import
 # import findlinefromfile # Local import Not needed
 import url_to_html      # Local import
 
+# https://en.wikipedia.org/wiki/Software_release_life_cycle
+
 class BASE():
     version = 2.32
     version_name = "RELEASE:TESTING/QA"
@@ -20,7 +22,7 @@ class LENGHTS(): # Global class to track file lengths
     pro_n = 0
 
 class bcolors: # Grabbed from https://stackoverflow.com/questions/287871/how-to-print-colored-text-to-the-terminal
-    # These should work on every terminal
+    # These should work on every terminal with 'python3'
     HEADER = '\033[95m' # Violet
     OKBLUE = '\033[94m'
     OKCYAN = '\033[96m'
@@ -285,9 +287,15 @@ def mainp():
     pro_t0 = time.time()
     pro_n = 0
     while True: # Proshop
-        url = pros_list[pro_n]
-        html = url_to_html.get_html(url)
-        name, price_fixed, avail = pros_scraper(html, url)
+        try:
+            url = pros_list[pro_n]
+            html = url_to_html.get_html(url)
+            name, price_fixed, avail = pros_scraper(html, url)
+        except Exception:
+            if BASE.debug == 1:
+                raise
+            print(f"{bcolors.FAIL}FATAL ERROR, Scraping Proshop not possible{bcolors.ENDC}")
+            break
         progressbar.progress_bar2(LENGHTS.pro_n - 1, pro_n)
         if avail.startswith("Tilattu") or avail.startswith("Tukkurilla") or avail.startswith("Tilaustuote"):
             pass
