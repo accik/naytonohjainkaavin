@@ -10,7 +10,7 @@ class bcolors: # Grabbed from https://stackoverflow.com/questions/287871/how-to-
     ENDC = '\033[0m' # Normal
     
 class settings():
-    user_agent = "Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:85.0) Gecko/20100101 Firefox/85.0" # Use what user agent you want, new one to be sure
+    user_agent = "Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:89.0) Gecko/20100101 Firefox/89.0" # Use what user agent you want, new one to be sure
     headers = {'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8','User-Agent': user_agent} # header from Google :P
     debug = 0
 
