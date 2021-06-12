@@ -3,14 +3,13 @@ from bs4 import BeautifulSoup # To properly manage html tags later
 import re # For regex operations
 import time # For time
 import progressbar      # Local import
-# import findlinefromfile # Local import Not needed
 import url_to_html      # Local import
 
 # https://en.wikipedia.org/wiki/Software_release_life_cycle
 
 class BASE():
-    version = 2.32
-    version_name = "RELEASE:TESTING/QA"
+    version = 2.4
+    version_name = "RELEASE:RELEASE"
     datafile = "example_datafiles/full_list.txt" # This the default file, change to your <datafile>.txt
     timelimit = 3 # Default value
     debug = 0 # To monitor debug status, only set here to force
